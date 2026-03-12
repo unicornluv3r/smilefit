@@ -10,6 +10,7 @@ import { InstructorsPage } from "@/pages/InstructorsPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { RegisterPage } from "@/pages/RegisterPage";
+import { InstructorProfilePage } from "@/pages/InstructorProfilePage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +33,7 @@ export function App() {
               <Route path="classes/:id" element={<ClassDetailPage />} />
               <Route path="how-it-works" element={<HowItWorksPage />} />
               <Route path="instructors" element={<InstructorsPage />} />
+              <Route path="instructors/:id" element={<InstructorProfilePage />} />
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="login" element={<LoginPage />} />
               <Route path="register" element={<RegisterPage />} />

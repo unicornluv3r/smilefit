@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { ClassDetail } from "@/data/mockClassDetail";
@@ -44,12 +45,12 @@ export function InstructorCard({ instructor }: InstructorCardProps) {
 
         <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
           <span>{instructor.classCount} classes taught</span>
-          <a
-            href="#"
+          <Link
+            to={`/instructors/${instructor.id}`}
             className="font-medium text-[#2563EB] hover:underline"
           >
             View Profile →
-          </a>
+          </Link>
         </div>
       </div>
     </div>
