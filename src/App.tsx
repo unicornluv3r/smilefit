@@ -24,6 +24,7 @@ import { CityPage } from "@/pages/CityPage";
 import { BookingSuccessPage } from "@/pages/BookingSuccessPage";
 import { BookingCancelledPage } from "@/pages/BookingCancelledPage";
 import { AuthCallbackPage } from "@/pages/AuthCallbackPage";
+import { NotFoundPage } from "@/pages/NotFoundPage";
 import { DashboardLayout } from "@/pages/instructor/DashboardLayout";
 import { OverviewPage } from "@/pages/instructor/OverviewPage";
 import { ClassesManagePage } from "@/pages/instructor/ClassesManagePage";
@@ -115,6 +116,7 @@ export function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Routes>
         </BrowserRouter>
