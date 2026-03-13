@@ -23,6 +23,7 @@ import { CitiesPage } from "@/pages/CitiesPage";
 import { CityPage } from "@/pages/CityPage";
 import { BookingSuccessPage } from "@/pages/BookingSuccessPage";
 import { BookingCancelledPage } from "@/pages/BookingCancelledPage";
+import { AuthCallbackPage } from "@/pages/AuthCallbackPage";
 import { DashboardLayout } from "@/pages/instructor/DashboardLayout";
 import { OverviewPage } from "@/pages/instructor/OverviewPage";
 import { ClassesManagePage } from "@/pages/instructor/ClassesManagePage";
@@ -93,6 +94,7 @@ export function App() {
                 }
               />
               <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="auth/callback" element={<AuthCallbackPage />} />
               <Route path="login" element={<LoginPage />} />
               <Route path="signup" element={<SignUpPage />} />
               <Route path="register" element={<Navigate to="/signup" replace />} />
