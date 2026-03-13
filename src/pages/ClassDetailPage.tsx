@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   MapPin,
@@ -13,8 +13,11 @@ import {
   Shirt,
   Sparkles,
   Backpack,
+  Users,
+  AlertCircle,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { MOCK_CLASS_DETAIL } from "@/data/mockClassDetail";
 import { ImageGallery } from "@/components/class-detail/ImageGallery";
@@ -38,11 +41,86 @@ const DIFFICULTY_COLORS: Record<string, string> = {
   Advanced: "border-red-500 text-red-700 bg-red-50",
 };
 
+function ClassDetailSkeleton() {
+  return (
+    <div className="container mx-auto px-4 pb-12 pt-6 animate-pulse">
+      <div className="mb-6 h-4 w-48 rounded bg-muted" />
+      <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
+        <div className="space-y-8">
+          <div className="aspect-[16/10] rounded-xl bg-muted" />
+          <div className="space-y-3">
+            <div className="h-8 w-3/4 rounded bg-muted" />
+            <div className="flex gap-2">
+              {Array.from({ length: 5 }, (_, i) => (
+                <div key={i} className="h-6 w-16 rounded-full bg-muted" />
+              ))}
+            </div>
+          </div>
+          <div className="h-px bg-muted" />
+          <div className="flex gap-4">
+            <div className="size-16 rounded-full bg-muted" />
+            <div className="flex-1 space-y-2">
+              <div className="h-5 w-32 rounded bg-muted" />
+              <div className="h-4 w-full rounded bg-muted" />
+              <div className="h-4 w-2/3 rounded bg-muted" />
+            </div>
+          </div>
+          <div className="h-px bg-muted" />
+          <div className="space-y-2">
+            <div className="h-5 w-40 rounded bg-muted" />
+            <div className="h-4 w-full rounded bg-muted" />
+            <div className="h-4 w-full rounded bg-muted" />
+            <div className="h-4 w-3/4 rounded bg-muted" />
+          </div>
+        </div>
+        <div className="hidden lg:block">
+          <div className="h-80 rounded-xl bg-muted" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ClassDetailError({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div className="container mx-auto flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
+      <AlertCircle className="mb-4 size-12 text-muted-foreground" />
+      <h2 className="text-xl font-semibold">Failed to load class</h2>
+      <p className="mt-2 text-sm text-muted-foreground">
+        Something went wrong. Please try again.
+      </p>
+      <Button
+        className="mt-4 bg-[#2563EB] hover:bg-[#2563EB]/90"
+        onClick={onRetry}
+      >
+        Try Again
+      </Button>
+    </div>
+  );
+}
+
 export function ClassDetailPage() {
-  const cls = MOCK_CLASS_DETAIL;
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [showFullDesc, setShowFullDesc] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogQty, setDialogQty] = useState(1);
+
+  const loadClass = () => {
+    setLoading(true);
+    setError(false);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  };
+
+  useEffect(loadClass, []);
+
+  if (loading) return <ClassDetailSkeleton />;
+  if (error) return <ClassDetailError onRetry={loadClass} />;
+
+  const cls = MOCK_CLASS_DETAIL;
 
   const avgRating =
     cls.reviews.reduce((sum, r) => sum + r.rating, 0) / cls.reviews.length;
@@ -129,6 +207,25 @@ export function ClassDetailPage() {
                     {tag}
                   </Badge>
                 ))}
+              </div>
+
+              <div className="mt-3 flex items-center gap-2 text-sm">
+                <Users className="size-4 text-muted-foreground" />
+                <span
+                  className={`font-medium ${
+                    cls.spotsRemaining <= 2
+                      ? "text-red-600"
+                      : cls.spotsRemaining <= 5
+                        ? "text-amber-600"
+                        : "text-green-600"
+                  }`}
+                >
+                  {cls.spotsRemaining} spot{cls.spotsRemaining !== 1 && "s"}{" "}
+                  remaining
+                </span>
+                <span className="text-muted-foreground">
+                  out of {cls.spotsTotal}
+                </span>
               </div>
             </div>
 
@@ -260,6 +357,9 @@ export function ClassDetailPage() {
                   <ReviewCard key={review.id} review={review} />
                 ))}
               </div>
+              <Button variant="outline" className="mt-4 w-full">
+                See all reviews
+              </Button>
             </section>
           </div>
 
