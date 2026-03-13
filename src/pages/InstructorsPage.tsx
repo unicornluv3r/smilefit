@@ -16,8 +16,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useInstructors } from "@/hooks/useInstructors";
+import { useClasses } from "@/hooks/useClasses";
 import type { InstructorProfile } from "@/lib/instructors";
+import type { DbClass } from "@/lib/bookings";
 import {
   MOCK_INSTRUCTORS,
   type MockInstructorSummary,
@@ -35,32 +38,40 @@ const CITIES = [
   "Palermo",
 ];
 
-function InstructorCard({
-  instructor,
-}: {
-  instructor: {
-    id: string;
-    name: string;
-    avatar: string;
-    specialty: string;
-    rating: number;
-    reviewCount: number;
-    city: string;
-    verified?: boolean;
-    bio?: string;
-  };
-}) {
+interface CardData {
+  id: string;
+  name: string;
+  avatar: string;
+  specialty: string;
+  rating: number;
+  reviewCount: number;
+  city: string;
+  verified: boolean;
+  bio?: string;
+}
+
+function InstructorCard({ instructor }: { instructor: CardData }) {
+  const initials = instructor.name
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2);
+
   return (
     <Link
       to={`/instructors/${instructor.id}`}
       className="group flex flex-col items-center rounded-xl border bg-card p-6 text-center transition-all hover:-translate-y-0.5 hover:shadow-lg"
     >
       <div className="relative">
-        <img
-          src={instructor.avatar}
-          alt={`${instructor.name}, fitness instructor`}
-          className="size-20 rounded-full object-cover ring-2 ring-background"
-        />
+        <Avatar className="size-20 ring-2 ring-background">
+          <AvatarImage
+            src={instructor.avatar}
+            alt={`${instructor.name}, fitness instructor`}
+          />
+          <AvatarFallback className="bg-[#2563EB]/10 text-[#2563EB] text-lg font-semibold">
+            {initials}
+          </AvatarFallback>
+        </Avatar>
         {instructor.verified && (
           <BadgeCheck className="absolute -right-1 bottom-0 size-5 fill-[#2563EB] text-white" />
         )}
@@ -87,7 +98,7 @@ function InstructorCard({
   );
 }
 
-function dbToCard(p: InstructorProfile) {
+function dbToCard(p: InstructorProfile): CardData {
   return {
     id: p.id,
     name: p.display_name ?? p.full_name ?? "Instructor",
@@ -103,7 +114,7 @@ function dbToCard(p: InstructorProfile) {
   };
 }
 
-function mockToCard(m: MockInstructorSummary) {
+function mockToCard(m: MockInstructorSummary): CardData {
   return {
     id: m.id,
     name: m.name,
@@ -113,8 +124,32 @@ function mockToCard(m: MockInstructorSummary) {
     reviewCount: m.reviewCount,
     city: m.city,
     verified: false,
-    bio: undefined,
   };
+}
+
+/**
+ * Derive instructor cards from classes table as a fallback
+ * when neither DB instructors nor mock instructors cover everyone.
+ */
+function classesToCards(classes: DbClass[]): CardData[] {
+  const seen = new Map<string, CardData>();
+  for (const cls of classes) {
+    const id = cls.instructor_id;
+    if (!id || seen.has(id)) continue;
+    seen.set(id, {
+      id,
+      name: cls.instructor_name ?? "Instructor",
+      avatar:
+        cls.instructor_avatar ??
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(cls.instructor_name ?? "I")}&background=2563EB&color=fff`,
+      specialty: cls.category,
+      rating: Number(cls.instructor_rating ?? 0),
+      reviewCount: 0,
+      city: cls.city,
+      verified: false,
+    });
+  }
+  return Array.from(seen.values());
 }
 
 function InstructorsSkeleton() {
@@ -139,13 +174,39 @@ export function InstructorsPage() {
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("All Cities");
   const { data: dbInstructors, isLoading } = useInstructors();
+  const { data: dbClasses } = useClasses();
 
   const instructors = useMemo(() => {
+    // Priority 1: real DB instructors
     if (dbInstructors && dbInstructors.length > 0) {
-      return dbInstructors.map(dbToCard);
+      const dbCards = dbInstructors.map(dbToCard);
+      // Also merge in any class-derived instructors not already present
+      if (dbClasses && dbClasses.length > 0) {
+        const dbIds = new Set(dbCards.map((c) => c.id));
+        const classCards = classesToCards(dbClasses).filter(
+          (c) => !dbIds.has(c.id),
+        );
+        return [...dbCards, ...classCards];
+      }
+      return dbCards;
     }
+
+    // Priority 2: derive from classes table
+    if (dbClasses && dbClasses.length > 0) {
+      const classCards = classesToCards(dbClasses);
+      if (classCards.length > 0) {
+        // Merge: class-derived + mock (for any not covered)
+        const classIds = new Set(classCards.map((c) => c.id));
+        const mockExtras = MOCK_INSTRUCTORS.map(mockToCard).filter(
+          (m) => !classIds.has(m.id),
+        );
+        return [...classCards, ...mockExtras];
+      }
+    }
+
+    // Priority 3: pure mock data
     return MOCK_INSTRUCTORS.map(mockToCard);
-  }, [dbInstructors]);
+  }, [dbInstructors, dbClasses]);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();

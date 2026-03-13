@@ -6,8 +6,12 @@ import {
   CalendarDays,
   MessageCircle,
   Share2,
+  BadgeCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "sonner";
 import type { InstructorProfile } from "@/data/mockInstructor";
 
 interface InstructorHeaderProps {
@@ -15,82 +19,102 @@ interface InstructorHeaderProps {
 }
 
 export function InstructorHeader({ instructor }: InstructorHeaderProps) {
-  return (
-    <div>
-      {/* Cover image */}
-      <div className="relative h-[180px] overflow-hidden rounded-xl sm:h-[250px]">
-        <img
-          src={instructor.coverImageUrl}
-          alt={`${instructor.name} cover`}
-          className="h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-      </div>
+  const initials = instructor.name
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
-      {/* Avatar + info */}
-      <div className="relative px-1">
-        <div className="-mt-14 flex flex-col items-start gap-4 sm:-mt-16 sm:flex-row sm:items-end sm:gap-6">
-          <img
-            src={instructor.avatarUrl}
-            alt={instructor.name}
-            className="size-24 rounded-full border-4 border-background object-cover shadow-lg sm:size-[120px]"
-          />
-          <div className="flex-1 pb-1">
+  return (
+    <div className="space-y-6">
+      {/* Profile info — clean white background, no image overlap */}
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+        {/* Avatar */}
+        <Avatar className="size-28 shrink-0 border-4 border-background shadow-lg sm:size-32">
+          <AvatarImage src={instructor.avatarUrl} alt={instructor.name} />
+          <AvatarFallback className="bg-[#2563EB]/10 text-[#2563EB] text-2xl font-bold">
+            {initials}
+          </AvatarFallback>
+        </Avatar>
+
+        {/* Info */}
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl font-bold sm:text-3xl">
               {instructor.name}
             </h1>
-            <p className="mt-0.5 text-muted-foreground">{instructor.tagline}</p>
-            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <MapPin className="size-3.5" />
-                {instructor.city}
-              </span>
-              <span className="flex items-center gap-1">
-                <Globe className="size-3.5" />
-                {instructor.languages.join(", ")}
-              </span>
-            </div>
+            {instructor.rating >= 4.5 && (
+              <BadgeCheck className="size-6 fill-[#2563EB] text-white shrink-0" />
+            )}
           </div>
-          <div className="flex gap-2 sm:pb-1">
-            <Button variant="outline">
-              <MessageCircle className="mr-2 size-4" />
+
+          <p className="mt-1 text-muted-foreground">{instructor.tagline}</p>
+
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <MapPin className="size-4" />
+              {instructor.city}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Globe className="size-4" />
+              {instructor.languages.join(", ")}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CalendarDays className="size-4" />
+              Joined {instructor.joinedDate}
+            </span>
+          </div>
+
+          {/* Action buttons */}
+          <div className="mt-4 flex gap-2">
+            <Button variant="outline" size="sm">
+              <MessageCircle className="mr-1.5 size-4" />
               Message
             </Button>
-            <Button variant="outline" size="icon">
-              <Share2 className="size-4" />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                void navigator.clipboard.writeText(window.location.href);
+                toast.success("Profile link copied!");
+              }}
+            >
+              <Share2 className="mr-1.5 size-4" />
+              Share
             </Button>
           </div>
         </div>
+      </div>
 
-        {/* Stats row */}
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StatItem
-            icon={<Star className="size-4 fill-amber-400 text-amber-400" />}
-            value={String(instructor.rating)}
-            label={`${instructor.reviewCount} reviews`}
-          />
-          <StatItem
-            icon={<GraduationCap className="size-4 text-[#2563EB]" />}
-            value={instructor.totalStudents.toLocaleString()}
-            label="Students"
-          />
-          <StatItem
-            icon={<CalendarDays className="size-4 text-[#2563EB]" />}
-            value={`${instructor.yearsExperience} yrs`}
-            label="Experience"
-          />
-          <StatItem
-            icon={<MessageCircle className="size-4 text-[#2563EB]" />}
-            value={instructor.responseRate}
-            label="Response rate"
-          />
-        </div>
+      {/* Stats row */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <StatCard
+          icon={<Star className="size-5 fill-amber-400 text-amber-400" />}
+          value={instructor.rating.toFixed(1)}
+          label={`${instructor.reviewCount} reviews`}
+        />
+        <StatCard
+          icon={<GraduationCap className="size-5 text-[#2563EB]" />}
+          value={instructor.totalStudents.toLocaleString()}
+          label="Students trained"
+        />
+        <StatCard
+          icon={<CalendarDays className="size-5 text-[#2563EB]" />}
+          value={`${instructor.yearsExperience}+`}
+          label="Years experience"
+        />
+        <StatCard
+          icon={<MessageCircle className="size-5 text-[#2563EB]" />}
+          value={instructor.responseRate}
+          label="Response rate"
+        />
       </div>
     </div>
   );
 }
 
-function StatItem({
+function StatCard({
   icon,
   value,
   label,
@@ -100,12 +124,14 @@ function StatItem({
   label: string;
 }) {
   return (
-    <div className="flex items-center gap-2.5 rounded-lg border p-3">
-      {icon}
-      <div>
-        <div className="text-sm font-semibold leading-tight">{value}</div>
-        <div className="text-xs text-muted-foreground">{label}</div>
-      </div>
-    </div>
+    <Card>
+      <CardContent className="flex items-center gap-3 p-4">
+        {icon}
+        <div>
+          <p className="text-lg font-bold leading-tight">{value}</p>
+          <p className="text-xs text-muted-foreground">{label}</p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
