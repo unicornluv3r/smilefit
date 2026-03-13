@@ -223,23 +223,59 @@ export function EarningsPage() {
         </CardContent>
       </Card>
 
-      {/* Stripe Connect placeholder */}
+      {/* Stripe Connect section */}
       <Card className="border-dashed">
-        <CardContent className="flex flex-col items-center p-8 text-center">
-          <CreditCard className="mb-3 size-10 text-muted-foreground/40" />
-          <h3 className="text-lg font-semibold">Connect with Stripe</h3>
-          <p className="mt-1 max-w-md text-sm text-muted-foreground">
-            Set up Stripe Connect to receive automatic weekly payouts directly to
-            your bank account. We handle all payment processing securely.
-          </p>
-          <Button
-            className="mt-4 bg-[#2563EB] hover:bg-[#2563EB]/90"
-            onClick={() =>
-              toast.info("Coming soon — Stripe integration in progress")
-            }
-          >
-            Set Up Payouts
-          </Button>
+        <CardContent className="p-8">
+          <div className="flex flex-col items-center text-center">
+            <CreditCard className="mb-3 size-10 text-muted-foreground/40" />
+            <h3 className="text-lg font-semibold">Connect with Stripe</h3>
+            <p className="mt-1 max-w-md text-sm text-muted-foreground">
+              Set up Stripe Connect to receive automatic weekly payouts directly to
+              your bank account.
+            </p>
+          </div>
+
+          {/* How payouts work */}
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            <div className="rounded-lg border bg-muted/30 p-4 text-center">
+              <div className="mx-auto mb-2 flex size-10 items-center justify-center rounded-full bg-[#2563EB]/10">
+                <span className="text-sm font-bold text-[#2563EB]">1</span>
+              </div>
+              <p className="text-sm font-medium">Students Pay</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Students pay for your classes securely via Stripe
+              </p>
+            </div>
+            <div className="rounded-lg border bg-muted/30 p-4 text-center">
+              <div className="mx-auto mb-2 flex size-10 items-center justify-center rounded-full bg-[#2563EB]/10">
+                <span className="text-sm font-bold text-[#2563EB]">2</span>
+              </div>
+              <p className="text-sm font-medium">We Process</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                SmileFit handles payment processing (10% platform fee)
+              </p>
+            </div>
+            <div className="rounded-lg border bg-muted/30 p-4 text-center">
+              <div className="mx-auto mb-2 flex size-10 items-center justify-center rounded-full bg-[#2563EB]/10">
+                <span className="text-sm font-bold text-[#2563EB]">3</span>
+              </div>
+              <p className="text-sm font-medium">You Get Paid</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Weekly automatic transfers to your bank account
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 flex justify-center">
+            <Button
+              className="bg-[#2563EB] hover:bg-[#2563EB]/90"
+              onClick={() =>
+                toast.info("Coming soon — Stripe Connect integration in progress")
+              }
+            >
+              Set Up Payouts
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

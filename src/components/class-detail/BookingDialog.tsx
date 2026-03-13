@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -22,9 +23,11 @@ import {
   BookingStepDetails,
   type BookingDetailsValues,
 } from "@/components/booking/BookingStepDetails";
+import { BookingStepPayment } from "@/components/booking/BookingStepPayment";
 import { BookingStepConfirmation } from "@/components/booking/BookingStepConfirmation";
 import { useAuth } from "@/context/AuthContext";
-import { useCreateBooking } from "@/hooks/useBookings";
+import { processPayment } from "@/lib/payments";
+import { toast } from "sonner";
 import type { ClassDetail } from "@/data/mockClassDetail";
 import type { DbSession } from "@/lib/bookings";
 
@@ -36,15 +39,6 @@ interface BookingDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   initialQty: number;
-}
-
-function generateConfirmationCode(): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let code = "";
-  for (let i = 0; i < 6; i++) {
-    code += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return `SF-2026-${code}`;
 }
 
 function formatSessionTime(iso: string): string {
@@ -69,8 +63,9 @@ export function BookingDialog({
   const [qty, setQty] = useState(initialQty);
   const [confirmationCode, setConfirmationCode] = useState("");
   const [showCloseAlert, setShowCloseAlert] = useState(false);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
   const { user } = useAuth();
-  const createBooking = useCreateBooking();
+  const navigate = useNavigate();
 
   const activeSession =
     sessions.find((s) => s.id === selectedSessionId) ?? sessions[0];
@@ -84,10 +79,11 @@ export function BookingDialog({
     setStep(1);
     setQty(initialQty);
     setConfirmationCode("");
+    setPaymentProcessing(false);
   }, [initialQty]);
 
   const handleOpenChange = (next: boolean) => {
-    if (!next && step === 2) {
+    if (!next && (step === 2 || step === 3)) {
       setShowCloseAlert(true);
       return;
     }
@@ -97,25 +93,52 @@ export function BookingDialog({
     onOpenChange(next);
   };
 
-  const handleConfirm = async (_data: BookingDetailsValues) => {
-    // If we have a real session and user, create in Supabase
-    if (activeSession && user) {
-      try {
-        await createBooking.mutateAsync({
-          classId: classData.id,
-          sessionId: activeSession.id,
-          quantity: qty,
-          totalPrice: total,
-        });
-      } catch {
-        // Error toast is handled by the mutation
-        return;
-      }
+  const handleDetailsConfirm = (_data: BookingDetailsValues) => {
+    // Move to payment step
+    setStep(3);
+  };
+
+  const handlePayment = async () => {
+    if (!user) {
+      toast.error("Please sign in to book a class");
+      return;
     }
 
-    const code = generateConfirmationCode();
-    setConfirmationCode(code);
-    setStep(3);
+    setPaymentProcessing(true);
+
+    const result = await processPayment({
+      userId: user.id,
+      classId: classData.id,
+      sessionId: activeSession?.id ?? "",
+      quantity: qty,
+      totalPrice: total,
+      className: classData.title,
+      unitPrice: Number(classData.price),
+    });
+
+    setPaymentProcessing(false);
+
+    if (result.success) {
+      if (result.confirmationCode) {
+        // Simulated flow — show confirmation in dialog
+        setConfirmationCode(result.confirmationCode);
+        setStep(4);
+      } else {
+        // Stripe redirect flow — navigate to success page
+        const params = new URLSearchParams({
+          class_name: classData.title,
+          date: formatSessionDateOnly(sessionDate),
+          time: formatSessionTime(sessionDate),
+          location: classData.location.name,
+          quantity: String(qty),
+          total: String(total),
+          code: result.confirmationCode ?? "",
+        });
+        navigate(`/booking/success?${params.toString()}`);
+      }
+    } else {
+      toast.error(result.error ?? "Payment failed. Please try again.");
+    }
   };
 
   const handleCloseAlertConfirm = () => {
@@ -141,7 +164,7 @@ export function BookingDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <StepIndicator currentStep={step} totalSteps={3} />
+          <StepIndicator currentStep={step} totalSteps={4} />
 
           <div className="mt-2">
             {step === 1 && (
@@ -156,10 +179,23 @@ export function BookingDialog({
               <BookingStepDetails
                 defaultValues={defaultFormValues}
                 onBack={() => setStep(1)}
-                onConfirm={(data) => void handleConfirm(data)}
+                onConfirm={(data) => void handleDetailsConfirm(data)}
               />
             )}
             {step === 3 && (
+              <BookingStepPayment
+                className={classData.title}
+                sessionDate={sessionDate}
+                quantity={qty}
+                subtotal={subtotal}
+                serviceFee={serviceFee}
+                total={total}
+                processing={paymentProcessing}
+                onBack={() => setStep(2)}
+                onPay={() => void handlePayment()}
+              />
+            )}
+            {step === 4 && (
               <BookingStepConfirmation
                 confirmationCode={confirmationCode}
                 className={classData.title}

@@ -1,16 +1,19 @@
 import { Check } from "lucide-react";
 
-const STEP_LABELS = ["Review", "Details", "Confirmed"];
+const STEP_LABELS_3 = ["Review", "Details", "Confirmed"];
+const STEP_LABELS_4 = ["Review", "Details", "Payment", "Confirmed"];
 
 interface StepIndicatorProps {
   currentStep: number;
   totalSteps?: number;
 }
 
-export function StepIndicator({ currentStep }: StepIndicatorProps) {
+export function StepIndicator({ currentStep, totalSteps = 3 }: StepIndicatorProps) {
+  const labels = totalSteps === 4 ? STEP_LABELS_4 : STEP_LABELS_3;
+
   return (
     <div className="flex items-center justify-center gap-0 px-4">
-      {STEP_LABELS.map((label, i) => {
+      {labels.map((label, i) => {
         const step = i + 1;
         const isActive = step === currentStep;
         const isCompleted = step < currentStep;
@@ -19,7 +22,7 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
           <div key={label} className="flex items-center">
             {i > 0 && (
               <div
-                className={`h-0.5 w-8 sm:w-12 ${
+                className={`h-0.5 w-6 sm:w-10 ${
                   isCompleted || isActive ? "bg-[#2563EB]" : "bg-muted"
                 }`}
               />
@@ -37,7 +40,7 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
                 {isCompleted ? <Check className="size-3.5" /> : step}
               </div>
               <span
-                className={`text-[11px] font-medium ${
+                className={`text-[10px] font-medium ${
                   isActive || isCompleted
                     ? "text-[#2563EB]"
                     : "text-muted-foreground"

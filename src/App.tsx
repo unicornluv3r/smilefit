@@ -21,6 +21,8 @@ import { BecomeInstructorPage } from "@/pages/BecomeInstructorPage";
 import { InstructorRoute } from "@/components/InstructorRoute";
 import { CitiesPage } from "@/pages/CitiesPage";
 import { CityPage } from "@/pages/CityPage";
+import { BookingSuccessPage } from "@/pages/BookingSuccessPage";
+import { BookingCancelledPage } from "@/pages/BookingCancelledPage";
 import { DashboardLayout } from "@/pages/instructor/DashboardLayout";
 import { OverviewPage } from "@/pages/instructor/OverviewPage";
 import { ClassesManagePage } from "@/pages/instructor/ClassesManagePage";
@@ -56,6 +58,8 @@ export function App() {
               <Route path="instructors" element={<InstructorsPage />} />
               <Route path="instructors/:id" element={<InstructorProfilePage />} />
               <Route path="become-instructor" element={<BecomeInstructorPage />} />
+              <Route path="booking/success" element={<BookingSuccessPage />} />
+              <Route path="booking/cancelled" element={<BookingCancelledPage />} />
               <Route
                 path="instructor/dashboard"
                 element={
