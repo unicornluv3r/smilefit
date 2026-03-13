@@ -22,6 +22,11 @@ export interface DbClass {
   cancellation_policy: string | null;
   recurring_schedule: string | null;
   instructor_id: string | null;
+  instructor_name: string | null;
+  instructor_bio: string | null;
+  instructor_avatar: string | null;
+  instructor_rating: number | null;
+  instructor_specialties: string[];
   is_active: boolean;
   created_at: string;
   updated_at: string;

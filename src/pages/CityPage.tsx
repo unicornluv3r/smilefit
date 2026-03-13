@@ -43,7 +43,7 @@ function dbClassToMock(cls: DbClass): MockClassData {
     id: cls.id,
     title: cls.title,
     category: cls.category,
-    instructor: "Instructor",
+    instructor: cls.instructor_name ?? "Instructor",
     price: Number(cls.price),
     schedule: cls.recurring_schedule ?? "",
     location: cls.address ?? cls.city,

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { LogOut, User, Calendar, LayoutDashboard } from "lucide-react";
+import { LogOut, User, Calendar, LayoutDashboard, GraduationCap } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -58,16 +58,21 @@ export function UserMenu() {
             My Bookings
           </Link>
         </DropdownMenuItem>
-        {role === "instructor" && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link to="/dashboard">
-                <LayoutDashboard className="mr-2 size-4" />
-                Instructor Dashboard
-              </Link>
-            </DropdownMenuItem>
-          </>
+        <DropdownMenuSeparator />
+        {role === "instructor" ? (
+          <DropdownMenuItem asChild>
+            <Link to="/instructor/dashboard">
+              <LayoutDashboard className="mr-2 size-4" />
+              Instructor Dashboard
+            </Link>
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem asChild>
+            <Link to="/become-instructor">
+              <GraduationCap className="mr-2 size-4" />
+              Become an Instructor
+            </Link>
+          </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => void signOut()}>

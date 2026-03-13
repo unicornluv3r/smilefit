@@ -64,7 +64,18 @@ function mapDbToClassDetail(
     id: dbClass.id,
     title: dbClass.title,
     description: dbClass.description ?? "",
-    instructor: MOCK_CLASS_DETAIL.instructor, // Keep mock instructor for now
+    instructor: dbClass.instructor_name
+      ? {
+          id: dbClass.instructor_id ?? "",
+          name: dbClass.instructor_name,
+          bio: dbClass.instructor_bio ?? "",
+          avatarUrl: dbClass.instructor_avatar ?? "",
+          rating: Number(dbClass.instructor_rating ?? 4.8),
+          reviewCount: 0,
+          classCount: 0,
+          specialties: dbClass.instructor_specialties ?? [],
+        }
+      : MOCK_CLASS_DETAIL.instructor,
     category: dbClass.category,
     city: dbClass.city,
     location: {

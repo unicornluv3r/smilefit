@@ -8,6 +8,14 @@ export interface Profile {
   role: "user" | "instructor" | "admin";
   city: string | null;
   favorite_categories: string[];
+  specialties: string[];
+  certifications: string[];
+  years_experience: number | null;
+  instagram_handle: string | null;
+  website_url: string | null;
+  is_verified_instructor: boolean;
+  total_classes_taught: number;
+  average_rating: number;
   created_at: string;
   updated_at: string;
 }

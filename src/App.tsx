@@ -16,6 +16,10 @@ import { ForgotPasswordPage } from "@/pages/ForgotPasswordPage";
 import { ProfilePage } from "@/pages/ProfilePage";
 import { BookingsPage } from "@/pages/BookingsPage";
 import { InstructorProfilePage } from "@/pages/InstructorProfilePage";
+import { InstructorDashboardPage } from "@/pages/InstructorDashboardPage";
+import { CreateClassPage } from "@/pages/CreateClassPage";
+import { BecomeInstructorPage } from "@/pages/BecomeInstructorPage";
+import { InstructorRoute } from "@/components/InstructorRoute";
 import { CitiesPage } from "@/pages/CitiesPage";
 import { CityPage } from "@/pages/CityPage";
 
@@ -44,6 +48,31 @@ export function App() {
               <Route path="how-it-works" element={<HowItWorksPage />} />
               <Route path="instructors" element={<InstructorsPage />} />
               <Route path="instructors/:id" element={<InstructorProfilePage />} />
+              <Route path="become-instructor" element={<BecomeInstructorPage />} />
+              <Route
+                path="instructor/dashboard"
+                element={
+                  <InstructorRoute>
+                    <InstructorDashboardPage />
+                  </InstructorRoute>
+                }
+              />
+              <Route
+                path="instructor/classes/new"
+                element={
+                  <InstructorRoute>
+                    <CreateClassPage />
+                  </InstructorRoute>
+                }
+              />
+              <Route
+                path="instructor/classes/:id/edit"
+                element={
+                  <InstructorRoute>
+                    <CreateClassPage />
+                  </InstructorRoute>
+                }
+              />
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="login" element={<LoginPage />} />
               <Route path="signup" element={<SignUpPage />} />
