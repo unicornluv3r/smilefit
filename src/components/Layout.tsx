@@ -161,9 +161,11 @@ function Footer() {
               expert instructors.
             </p>
             <div className="mt-4 flex gap-3">
-              <Button variant="ghost" size="icon" aria-label="Instagram">
-                <Instagram className="size-4" />
-              </Button>
+              <a href="https://instagram.com/joinsmilefit" target="_blank" rel="noopener noreferrer">
+                <Button variant="ghost" size="icon" aria-label="Instagram @joinsmilefit">
+                  <Instagram className="size-4" />
+                </Button>
+              </a>
               <Button variant="ghost" size="icon" aria-label="Facebook">
                 <Facebook className="size-4" />
               </Button>
