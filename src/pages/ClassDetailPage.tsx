@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   MapPin,
   Clock,
@@ -19,7 +19,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useClassById, useClassSessions } from "@/hooks/useClasses";
+import { useAuth } from "@/context/AuthContext";
 import { MOCK_CLASS_DETAIL } from "@/data/mockClassDetail";
+import type { ClassDetail } from "@/data/mockClassDetail";
+import type { DbClass, DbSession } from "@/lib/bookings";
 import { ImageGallery } from "@/components/class-detail/ImageGallery";
 import { InstructorCard } from "@/components/class-detail/InstructorCard";
 import { ReviewCard, AverageRating } from "@/components/class-detail/ReviewCard";
@@ -33,6 +37,14 @@ const BRING_ICONS: Record<string, typeof Droplets> = {
   "Comfortable clothing": Shirt,
   "Yoga mat": Sparkles,
   "Light towel": Backpack,
+  "Light layers": Shirt,
+  Towel: Backpack,
+  "Running shoes": Footprints,
+  "Sand-appropriate shoes": Footprints,
+  "Light jacket": Shirt,
+  "Pilates mat": Sparkles,
+  "Meditation cushion (optional)": Sparkles,
+  Blanket: Backpack,
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
@@ -40,6 +52,47 @@ const DIFFICULTY_COLORS: Record<string, string> = {
   Intermediate: "border-amber-500 text-amber-700 bg-amber-50",
   Advanced: "border-red-500 text-red-700 bg-red-50",
 };
+
+function mapDbToClassDetail(
+  dbClass: DbClass,
+  sessions: DbSession[],
+): ClassDetail {
+  const nextSession = sessions[0];
+  const spotsRemaining = nextSession?.spots_remaining ?? dbClass.spots_total;
+
+  return {
+    id: dbClass.id,
+    title: dbClass.title,
+    description: dbClass.description ?? "",
+    instructor: MOCK_CLASS_DETAIL.instructor, // Keep mock instructor for now
+    category: dbClass.category,
+    city: dbClass.city,
+    location: {
+      name: dbClass.address?.split(",")[0] ?? dbClass.city,
+      address: dbClass.address ?? dbClass.city,
+      lat: dbClass.latitude ?? 0,
+      lng: dbClass.longitude ?? 0,
+    },
+    price: Number(dbClass.price),
+    currency: dbClass.currency,
+    spotsTotal: dbClass.spots_total,
+    spotsRemaining: spotsRemaining,
+    duration: dbClass.duration_minutes,
+    difficulty: dbClass.difficulty,
+    images: dbClass.images.length > 0
+      ? dbClass.images
+      : ["https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1200"],
+    schedule: {
+      nextSession: nextSession?.start_time ?? new Date().toISOString(),
+      recurring: dbClass.recurring_schedule ?? "",
+    },
+    tags: dbClass.tags,
+    whatToBring: dbClass.what_to_bring,
+    cancellationPolicy:
+      dbClass.cancellation_policy ?? "Free cancellation up to 24 hours before.",
+    reviews: MOCK_CLASS_DETAIL.reviews, // Keep mock reviews for now
+  };
+}
 
 function ClassDetailSkeleton() {
   return (
@@ -81,65 +134,66 @@ function ClassDetailSkeleton() {
   );
 }
 
-function ClassDetailError({ onRetry }: { onRetry: () => void }) {
-  return (
-    <div className="container mx-auto flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
-      <AlertCircle className="mb-4 size-12 text-muted-foreground" />
-      <h2 className="text-xl font-semibold">Failed to load class</h2>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Something went wrong. Please try again.
-      </p>
-      <Button
-        className="mt-4 bg-[#2563EB] hover:bg-[#2563EB]/90"
-        onClick={onRetry}
-      >
-        Try Again
-      </Button>
-    </div>
-  );
-}
-
 export function ClassDetailPage() {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const {
+    data: dbClass,
+    isLoading: classLoading,
+    error: classError,
+    refetch: refetchClass,
+  } = useClassById(id);
+
+  const { data: sessions = [] } = useClassSessions(id);
+
   const [showFullDesc, setShowFullDesc] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogQty, setDialogQty] = useState(1);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
 
-  useEffect(() => {
-    setLoading(true);
-    setError(false);
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
+  if (classLoading) return <ClassDetailSkeleton />;
 
-  const loadClass = () => {
-    setLoading(true);
-    setError(false);
-    setTimeout(() => setLoading(false), 500);
-  };
+  // Fall back to mock if Supabase fetch fails
+  const cls: ClassDetail = dbClass
+    ? mapDbToClassDetail(dbClass, sessions)
+    : MOCK_CLASS_DETAIL;
 
-  if (loading) return <ClassDetailSkeleton />;
-  if (error) return <ClassDetailError onRetry={loadClass} />;
+  const usingSupabase = !!dbClass;
+  const selectedSession = sessions.find((s) => s.id === selectedSessionId) ?? sessions[0];
 
-  const cls = MOCK_CLASS_DETAIL;
+  if (classError && !dbClass) {
+    // Check if it's the mock ID "1"
+    if (id === "1" || id === MOCK_CLASS_DETAIL.id) {
+      // Use mock data - fall through
+    } else {
+      return (
+        <div className="container mx-auto flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
+          <AlertCircle className="mb-4 size-12 text-muted-foreground" />
+          <h2 className="text-xl font-semibold">Failed to load class</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Something went wrong. Please try again.
+          </p>
+          <Button
+            className="mt-4 bg-[#2563EB] hover:bg-[#2563EB]/90"
+            onClick={() => void refetchClass()}
+          >
+            Try Again
+          </Button>
+        </div>
+      );
+    }
+  }
 
   const avgRating =
     cls.reviews.reduce((sum, r) => sum + r.rating, 0) / cls.reviews.length;
 
-  const nextDate = new Date(cls.schedule.nextSession);
-  const formattedNext = nextDate.toLocaleDateString("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
   const handleBook = (qty: number) => {
+    if (!user) {
+      navigate(`/login?returnUrl=/classes/${id}`);
+      return;
+    }
     setDialogQty(qty);
     setDialogOpen(true);
   };
@@ -163,7 +217,6 @@ export function ClassDetailPage() {
         <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
           {/* ── Left column ── */}
           <div className="min-w-0 space-y-10">
-            {/* Image gallery */}
             <ImageGallery images={cls.images} alt={cls.title} />
 
             {/* Title block */}
@@ -275,19 +328,81 @@ export function ClassDetailPage() {
               <h2 className="mb-3 text-lg font-semibold">
                 Schedule &amp; Availability
               </h2>
-              <div className="rounded-xl border bg-muted/30 p-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <CalendarDays className="size-4 text-[#2563EB]" />
-                  <span>
-                    <span className="font-medium">Next session: </span>
-                    {formattedNext}
-                  </span>
+              {usingSupabase && sessions.length > 0 ? (
+                <div className="space-y-2">
+                  {sessions.slice(0, 6).map((session) => {
+                    const d = new Date(session.start_time);
+                    const formatted = d.toLocaleDateString("en-GB", {
+                      weekday: "short",
+                      day: "numeric",
+                      month: "short",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    });
+                    const isSelected = session.id === (selectedSessionId ?? sessions[0]?.id);
+                    const soldOut = session.spots_remaining === 0;
+                    return (
+                      <button
+                        key={session.id}
+                        onClick={() => setSelectedSessionId(session.id)}
+                        disabled={soldOut}
+                        className={`flex w-full items-center justify-between rounded-lg border p-3 text-left text-sm transition-colors ${
+                          isSelected
+                            ? "border-[#2563EB] bg-[#2563EB]/5"
+                            : "hover:bg-muted/50"
+                        } ${soldOut ? "opacity-50" : ""}`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <CalendarDays className="size-4 text-[#2563EB]" />
+                          <span>{formatted}</span>
+                        </div>
+                        <span
+                          className={`text-xs font-medium ${
+                            soldOut
+                              ? "text-red-600"
+                              : session.spots_remaining <= 3
+                                ? "text-amber-600"
+                                : "text-green-600"
+                          }`}
+                        >
+                          {soldOut
+                            ? "Sold out"
+                            : `${session.spots_remaining} spots`}
+                        </span>
+                      </button>
+                    );
+                  })}
+                  {sessions.length > 6 && (
+                    <p className="text-center text-xs text-muted-foreground">
+                      +{sessions.length - 6} more sessions
+                    </p>
+                  )}
                 </div>
-                <div className="mt-2 flex items-center gap-2">
-                  <Clock className="size-4 text-[#2563EB]" />
-                  <span>{cls.schedule.recurring}</span>
+              ) : (
+                <div className="rounded-xl border bg-muted/30 p-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <CalendarDays className="size-4 text-[#2563EB]" />
+                    <span>
+                      <span className="font-medium">Next session: </span>
+                      {new Date(cls.schedule.nextSession).toLocaleDateString(
+                        "en-GB",
+                        {
+                          weekday: "long",
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        },
+                      )}
+                    </span>
+                  </div>
+                  <div className="mt-2 flex items-center gap-2">
+                    <Clock className="size-4 text-[#2563EB]" />
+                    <span>{cls.schedule.recurring}</span>
+                  </div>
                 </div>
-              </div>
+              )}
             </section>
 
             <Separator />
@@ -335,9 +450,7 @@ export function ClassDetailPage() {
               <div className="flex items-start gap-3 rounded-xl border bg-muted/30 p-4">
                 <ShieldCheck className="mt-0.5 size-5 shrink-0 text-green-600" />
                 <div>
-                  <h3 className="text-sm font-semibold">
-                    Cancellation Policy
-                  </h3>
+                  <h3 className="text-sm font-semibold">Cancellation Policy</h3>
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                     {cls.cancellationPolicy}
                   </p>
@@ -370,21 +483,27 @@ export function ClassDetailPage() {
           {/* ── Right column — sticky booking card (desktop) ── */}
           <aside className="hidden lg:block">
             <div className="sticky top-24">
-              <BookingCard classData={cls} onBook={handleBook} />
+              <BookingCard
+                classData={cls}
+                sessions={usingSupabase ? sessions : []}
+                selectedSessionId={selectedSession?.id ?? null}
+                onSelectSession={setSelectedSessionId}
+                onBook={handleBook}
+              />
             </div>
           </aside>
         </div>
       </div>
 
       {/* Mobile bottom bar */}
-      <MobileBookingBar
-        price={cls.price}
-        onBook={() => handleBook(1)}
-      />
+      <MobileBookingBar price={cls.price} onBook={() => handleBook(1)} />
 
       {/* Booking dialog */}
       <BookingDialog
         classData={cls}
+        sessions={usingSupabase ? sessions : []}
+        selectedSessionId={selectedSession?.id ?? null}
+        onSelectSession={setSelectedSessionId}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         initialQty={dialogQty}

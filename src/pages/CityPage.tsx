@@ -31,9 +31,30 @@ import { Badge } from "@/components/ui/badge";
 import { ClassCard } from "@/components/ClassCard";
 import { MOCK_CITIES } from "@/data/mockCities";
 import { MOCK_CLASSES } from "@/data/mockClasses";
+import type { MockClassData } from "@/data/mockClasses";
 import { MOCK_INSTRUCTORS } from "@/data/mockInstructors";
+import { useClasses } from "@/hooks/useClasses";
+import type { DbClass } from "@/lib/bookings";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { haversineDistance, formatDistance } from "@/utils/distance";
+
+function dbClassToMock(cls: DbClass): MockClassData {
+  return {
+    id: cls.id,
+    title: cls.title,
+    category: cls.category,
+    instructor: "Instructor",
+    price: Number(cls.price),
+    schedule: cls.recurring_schedule ?? "",
+    location: cls.address ?? cls.city,
+    city: cls.city,
+    image: cls.images[0]?.replace("w=1200", "w=600") ?? "",
+    spotsLeft: null,
+    latitude: cls.latitude ?? 0,
+    longitude: cls.longitude ?? 0,
+    popular: false,
+  };
+}
 
 const ICON_MAP: Record<string, LucideIcon> = {
   Landmark,
@@ -62,15 +83,23 @@ export function CityPage() {
   const city = MOCK_CITIES.find((c) => c.slug === slug);
   const geo = useGeolocation();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { data: dbClasses } = useClasses();
 
   const cityClasses = useMemo(() => {
     if (!city) return [];
-    const filtered = MOCK_CLASSES.filter((c) => c.city === city.nameIT);
+    // Use Supabase classes if available, otherwise mock
+    const allClasses: MockClassData[] =
+      dbClasses && dbClasses.length > 0
+        ? dbClasses.map(dbClassToMock)
+        : MOCK_CLASSES;
+    const filtered = allClasses.filter(
+      (c) => c.city === city.nameIT || c.city === city.name,
+    );
     if (selectedCategory) {
       return filtered.filter((c) => c.category === selectedCategory);
     }
     return filtered;
-  }, [city, selectedCategory]);
+  }, [city, selectedCategory, dbClasses]);
 
   const cityInstructors = useMemo(() => {
     if (!city) return [];

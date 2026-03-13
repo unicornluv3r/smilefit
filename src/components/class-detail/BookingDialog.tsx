@@ -23,13 +23,16 @@ import {
   type BookingDetailsValues,
 } from "@/components/booking/BookingStepDetails";
 import { BookingStepConfirmation } from "@/components/booking/BookingStepConfirmation";
-import { useBookings } from "@/context/BookingContext";
 import { useAuth } from "@/context/AuthContext";
+import { useCreateBooking } from "@/hooks/useBookings";
 import type { ClassDetail } from "@/data/mockClassDetail";
-import type { BookingData } from "@/data/mockBookings";
+import type { DbSession } from "@/lib/bookings";
 
 interface BookingDialogProps {
   classData: ClassDetail;
+  sessions: DbSession[];
+  selectedSessionId: string | null;
+  onSelectSession: (id: string) => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   initialQty: number;
@@ -56,6 +59,8 @@ function formatSessionDateOnly(iso: string): string {
 
 export function BookingDialog({
   classData,
+  sessions,
+  selectedSessionId,
   open,
   onOpenChange,
   initialQty,
@@ -64,10 +69,14 @@ export function BookingDialog({
   const [qty, setQty] = useState(initialQty);
   const [confirmationCode, setConfirmationCode] = useState("");
   const [showCloseAlert, setShowCloseAlert] = useState(false);
-  const { addBooking } = useBookings();
   const { user } = useAuth();
+  const createBooking = useCreateBooking();
 
-  const subtotal = classData.price * qty;
+  const activeSession =
+    sessions.find((s) => s.id === selectedSessionId) ?? sessions[0];
+  const sessionDate = activeSession?.start_time ?? classData.schedule.nextSession;
+
+  const subtotal = Number(classData.price) * qty;
   const serviceFee = Math.round(subtotal * 0.1 * 100) / 100;
   const total = subtotal + serviceFee;
 
@@ -88,34 +97,24 @@ export function BookingDialog({
     onOpenChange(next);
   };
 
-  const handleConfirm = (data: BookingDetailsValues) => {
+  const handleConfirm = async (_data: BookingDetailsValues) => {
+    // If we have a real session and user, create in Supabase
+    if (activeSession && user) {
+      try {
+        await createBooking.mutateAsync({
+          classId: classData.id,
+          sessionId: activeSession.id,
+          quantity: qty,
+          totalPrice: total,
+        });
+      } catch {
+        // Error toast is handled by the mutation
+        return;
+      }
+    }
+
     const code = generateConfirmationCode();
     setConfirmationCode(code);
-
-    const booking: BookingData = {
-      id: `bk-${Date.now()}`,
-      className: classData.title,
-      classId: classData.id,
-      classImage: classData.images[0],
-      instructorName: classData.instructor.name,
-      instructorAvatar: classData.instructor.avatarUrl,
-      category: classData.category,
-      city: classData.city,
-      location: classData.location.name,
-      date: formatSessionDateOnly(classData.schedule.nextSession),
-      time: formatSessionTime(classData.schedule.nextSession),
-      duration: classData.duration,
-      quantity: qty,
-      pricePerPerson: classData.price,
-      totalPrice: total,
-      currency: classData.currency,
-      status: "confirmed",
-      bookedAt: new Date().toISOString(),
-      confirmationCode: code,
-    };
-
-    void data;
-    addBooking(booking);
     setStep(3);
   };
 
@@ -157,15 +156,15 @@ export function BookingDialog({
               <BookingStepDetails
                 defaultValues={defaultFormValues}
                 onBack={() => setStep(1)}
-                onConfirm={handleConfirm}
+                onConfirm={(data) => void handleConfirm(data)}
               />
             )}
             {step === 3 && (
               <BookingStepConfirmation
                 confirmationCode={confirmationCode}
                 className={classData.title}
-                date={formatSessionDateOnly(classData.schedule.nextSession)}
-                time={formatSessionTime(classData.schedule.nextSession)}
+                date={formatSessionDateOnly(sessionDate)}
+                time={formatSessionTime(sessionDate)}
                 location={classData.location.name}
                 quantity={qty}
                 total={total}

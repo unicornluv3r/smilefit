@@ -17,10 +17,31 @@ import {
   CITIES,
   PRICE_FILTERS,
 } from "@/data/mockClasses";
+import type { MockClassData } from "@/data/mockClasses";
 import { MOCK_CITIES } from "@/data/mockCities";
+import { useClasses } from "@/hooks/useClasses";
+import type { DbClass } from "@/lib/bookings";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useWishlist } from "@/hooks/useWishlist";
 import { sortByDistance, findNearestCity } from "@/utils/distance";
+
+function dbClassToMock(cls: DbClass): MockClassData {
+  return {
+    id: cls.id,
+    title: cls.title,
+    category: cls.category,
+    instructor: "Instructor", // placeholder
+    price: Number(cls.price),
+    schedule: cls.recurring_schedule ?? "",
+    location: cls.address ?? cls.city,
+    city: cls.city,
+    image: cls.images[0]?.replace("w=1200", "w=600") ?? "",
+    spotsLeft: null,
+    latitude: cls.latitude ?? 0,
+    longitude: cls.longitude ?? 0,
+    popular: false,
+  };
+}
 
 function matchesPrice(price: number, filter: string): boolean {
   switch (filter) {
@@ -44,6 +65,15 @@ export function ClassesPage() {
 
   const geo = useGeolocation();
   const wishlist = useWishlist();
+  const { data: dbClasses } = useClasses();
+
+  // Use Supabase data if available, otherwise fall back to mock
+  const allClasses: MockClassData[] = useMemo(() => {
+    if (dbClasses && dbClasses.length > 0) {
+      return dbClasses.map(dbClassToMock);
+    }
+    return MOCK_CLASSES;
+  }, [dbClasses]);
 
   function handleNearMe() {
     if (geo.latitude !== null && geo.longitude !== null) {
@@ -62,7 +92,6 @@ export function ClassesPage() {
     }
 
     geo.requestPermission();
-    // We'll activate on next render when coords are available
     const checkInterval = setInterval(() => {
       const cached = sessionStorage.getItem("smilefit_geo");
       if (cached) {
@@ -76,7 +105,6 @@ export function ClassesPage() {
         setNearMeActive(true);
       }
     }, 500);
-    // Timeout after 15s
     setTimeout(() => {
       clearInterval(checkInterval);
       if (!sessionStorage.getItem("smilefit_geo")) {
@@ -87,7 +115,7 @@ export function ClassesPage() {
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    let results = MOCK_CLASSES.filter((cls) => {
+    let results = allClasses.filter((cls) => {
       if (
         q &&
         !cls.title.toLowerCase().includes(q) &&
@@ -112,7 +140,7 @@ export function ClassesPage() {
     }
 
     return results;
-  }, [search, category, city, priceFilter, nearMeActive, geo.latitude, geo.longitude]);
+  }, [search, category, city, priceFilter, nearMeActive, geo.latitude, geo.longitude, allClasses]);
 
   return (
     <div className="container mx-auto px-4 py-10 animate-[fade-in-up_0.5s_ease-out]">

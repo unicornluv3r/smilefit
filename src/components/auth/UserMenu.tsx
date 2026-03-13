@@ -53,7 +53,7 @@ export function UserMenu() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/dashboard">
+          <Link to="/bookings">
             <Calendar className="mr-2 size-4" />
             My Bookings
           </Link>
