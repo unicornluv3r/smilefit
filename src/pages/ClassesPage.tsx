@@ -1,15 +1,8 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { MapPin, Clock, Users, Search } from "lucide-react";
+import { Search, Crosshair } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -17,169 +10,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-interface MockClass {
-  id: string;
-  title: string;
-  category: string;
-  instructor: string;
-  price: number;
-  schedule: string;
-  location: string;
-  city: string;
-  image: string;
-  spotsLeft: number | null;
-}
-
-const CATEGORIES = [
-  "All Categories",
-  "Yoga",
-  "HIIT",
-  "Pilates",
-  "Bootcamp",
-  "Tai Chi",
-  "Functional",
-  "Running",
-  "Boxing",
-] as const;
-
-const CITIES = [
-  "All Cities",
-  "Milano",
-  "Roma",
-  "Firenze",
-  "Torino",
-  "Palermo",
-  "Bologna",
-  "Viareggio",
-] as const;
-
-const PRICE_FILTERS = [
-  "All Prices",
-  "Under €15",
-  "€15-€20",
-  "Over €20",
-] as const;
-
-const MOCK_CLASSES: MockClass[] = [
-  {
-    id: "1",
-    title: "Morning Yoga in Parco Sempione",
-    category: "Yoga",
-    instructor: "Sofia Bianchi",
-    price: 15,
-    schedule: "Tue & Thu, 7:30 AM",
-    location: "Parco Sempione, Milano",
-    city: "Milano",
-    image:
-      "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=600&h=400&fit=crop",
-    spotsLeft: null,
-  },
-  {
-    id: "2",
-    title: "HIIT Workout at Villa Borghese",
-    category: "HIIT",
-    instructor: "Marco Rossi",
-    price: 18,
-    schedule: "Mon, Wed & Fri, 6:00 PM",
-    location: "Villa Borghese, Roma",
-    city: "Roma",
-    image:
-      "https://images.unsplash.com/photo-1534258936925-c58bed479fcb?w=600&h=400&fit=crop",
-    spotsLeft: 3,
-  },
-  {
-    id: "3",
-    title: "Pilates in Parco delle Cascine",
-    category: "Pilates",
-    instructor: "Lucia Verdi",
-    price: 16,
-    schedule: "Sat, 9:00 AM",
-    location: "Parco delle Cascine, Firenze",
-    city: "Firenze",
-    image:
-      "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&h=400&fit=crop",
-    spotsLeft: null,
-  },
-  {
-    id: "4",
-    title: "Bootcamp Training by the Beach",
-    category: "Bootcamp",
-    instructor: "Giovanni Russo",
-    price: 20,
-    schedule: "Tue & Sat, 8:00 AM",
-    location: "Spiaggia di Mondello, Palermo",
-    city: "Palermo",
-    image:
-      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop",
-    spotsLeft: null,
-  },
-  {
-    id: "5",
-    title: "Evening Tai Chi at Parco Valentino",
-    category: "Tai Chi",
-    instructor: "Elena Conti",
-    price: 14,
-    schedule: "Mon & Wed, 7:00 PM",
-    location: "Parco del Valentino, Torino",
-    city: "Torino",
-    image:
-      "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop",
-    spotsLeft: null,
-  },
-  {
-    id: "6",
-    title: "Functional Training at Giardini Margherita",
-    category: "Functional",
-    instructor: "Paolo Ferrara",
-    price: 17,
-    schedule: "Thu & Sun, 6:30 PM",
-    location: "Giardini Margherita, Bologna",
-    city: "Bologna",
-    image:
-      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&h=400&fit=crop",
-    spotsLeft: null,
-  },
-  {
-    id: "7",
-    title: "Sunrise Running Group",
-    category: "Running",
-    instructor: "Andrea Monti",
-    price: 12,
-    schedule: "Daily, 6:00 AM",
-    location: "Parco della Pellerina, Torino",
-    city: "Torino",
-    image:
-      "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=600&h=400&fit=crop",
-    spotsLeft: null,
-  },
-  {
-    id: "8",
-    title: "Sunset Beach Yoga",
-    category: "Yoga",
-    instructor: "Chiara Esposito",
-    price: 18,
-    schedule: "Fri & Sun, 7:30 PM",
-    location: "Spiaggia di Viareggio, Viareggio",
-    city: "Viareggio",
-    image:
-      "https://images.unsplash.com/photo-1588286840104-8957b019727f?w=600&h=400&fit=crop",
-    spotsLeft: null,
-  },
-  {
-    id: "9",
-    title: "Outdoor Boxing Class",
-    category: "Boxing",
-    instructor: "Roberto Leone",
-    price: 22,
-    schedule: "Tue & Thu, 6:00 PM",
-    location: "Parco Dora, Torino",
-    city: "Torino",
-    image:
-      "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=600&h=400&fit=crop",
-    spotsLeft: 2,
-  },
-];
+import { ClassCard } from "@/components/ClassCard";
+import {
+  MOCK_CLASSES,
+  CATEGORIES,
+  CITIES,
+  PRICE_FILTERS,
+} from "@/data/mockClasses";
+import { MOCK_CITIES } from "@/data/mockCities";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import { useWishlist } from "@/hooks/useWishlist";
+import { sortByDistance, findNearestCity } from "@/utils/distance";
 
 function matchesPrice(price: number, filter: string): boolean {
   switch (filter) {
@@ -199,10 +40,54 @@ export function ClassesPage() {
   const [category, setCategory] = useState("All Categories");
   const [city, setCity] = useState("All Cities");
   const [priceFilter, setPriceFilter] = useState("All Prices");
+  const [nearMeActive, setNearMeActive] = useState(false);
+
+  const geo = useGeolocation();
+  const wishlist = useWishlist();
+
+  function handleNearMe() {
+    if (geo.latitude !== null && geo.longitude !== null) {
+      setNearMeActive((prev) => !prev);
+      if (!nearMeActive) {
+        const nearest = findNearestCity(
+          geo.latitude,
+          geo.longitude,
+          MOCK_CITIES,
+        );
+        setCity(nearest.nameIT);
+      } else {
+        setCity("All Cities");
+      }
+      return;
+    }
+
+    geo.requestPermission();
+    // We'll activate on next render when coords are available
+    const checkInterval = setInterval(() => {
+      const cached = sessionStorage.getItem("smilefit_geo");
+      if (cached) {
+        clearInterval(checkInterval);
+        const { latitude, longitude } = JSON.parse(cached) as {
+          latitude: number;
+          longitude: number;
+        };
+        const nearest = findNearestCity(latitude, longitude, MOCK_CITIES);
+        setCity(nearest.nameIT);
+        setNearMeActive(true);
+      }
+    }, 500);
+    // Timeout after 15s
+    setTimeout(() => {
+      clearInterval(checkInterval);
+      if (!sessionStorage.getItem("smilefit_geo")) {
+        toast.error("Could not get your location. Please try again.");
+      }
+    }, 15000);
+  }
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    return MOCK_CLASSES.filter((cls) => {
+    let results = MOCK_CLASSES.filter((cls) => {
       if (
         q &&
         !cls.title.toLowerCase().includes(q) &&
@@ -217,10 +102,20 @@ export function ClassesPage() {
       if (!matchesPrice(cls.price, priceFilter)) return false;
       return true;
     });
-  }, [search, category, city, priceFilter]);
+
+    if (
+      nearMeActive &&
+      geo.latitude !== null &&
+      geo.longitude !== null
+    ) {
+      results = sortByDistance(geo.latitude, geo.longitude, results);
+    }
+
+    return results;
+  }, [search, category, city, priceFilter, nearMeActive, geo.latitude, geo.longitude]);
 
   return (
-    <div className="container mx-auto px-4 py-10">
+    <div className="container mx-auto px-4 py-10 animate-[fade-in-up_0.5s_ease-out]">
       {/* Header */}
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -258,7 +153,7 @@ export function ClassesPage() {
           </SelectContent>
         </Select>
 
-        <Select value={city} onValueChange={setCity}>
+        <Select value={city} onValueChange={(v) => { setCity(v); setNearMeActive(false); }}>
           <SelectTrigger className="w-[160px]">
             <SelectValue />
           </SelectTrigger>
@@ -283,6 +178,15 @@ export function ClassesPage() {
             ))}
           </SelectContent>
         </Select>
+
+        <Button
+          variant={nearMeActive ? "default" : "outline"}
+          onClick={handleNearMe}
+          className={`gap-2 ${nearMeActive ? "bg-[#2563EB] hover:bg-[#2563EB]/90" : ""}`}
+        >
+          <Crosshair className={`size-4 ${geo.loading ? "animate-pulse" : ""}`} />
+          Near Me
+        </Button>
       </div>
 
       {/* Results count */}
@@ -294,7 +198,18 @@ export function ClassesPage() {
       {filtered.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((cls) => (
-            <ClassCard key={cls.id} cls={cls} />
+            <ClassCard
+              key={cls.id}
+              cls={cls}
+              showWishlist
+              wishlisted={wishlist.isWishlisted(cls.id)}
+              onToggleWishlist={wishlist.toggle}
+              distanceKm={
+                "distanceKm" in cls
+                  ? (cls as typeof cls & { distanceKm: number }).distanceKm
+                  : undefined
+              }
+            />
           ))}
         </div>
       ) : (
@@ -306,57 +221,5 @@ export function ClassesPage() {
         </div>
       )}
     </div>
-  );
-}
-
-function ClassCard({ cls }: { cls: MockClass }) {
-  return (
-    <Card className="flex flex-col overflow-hidden">
-      <div className="relative">
-        <img
-          src={cls.image}
-          alt={cls.title}
-          className="h-48 w-full object-cover"
-        />
-        <Badge className="absolute top-3 left-3 bg-[#2563EB] text-white">
-          {cls.category}
-        </Badge>
-        {cls.spotsLeft !== null && (
-          <Badge
-            variant="destructive"
-            className="absolute top-3 right-3 bg-red-600 text-white"
-          >
-            Only {cls.spotsLeft} spots left
-          </Badge>
-        )}
-      </div>
-      <CardHeader>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Clock className="size-3.5" />
-          <span>{cls.schedule}</span>
-        </div>
-        <CardTitle className="text-lg">{cls.title}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-2 text-sm text-muted-foreground">
-        <div className="flex items-center gap-2">
-          <MapPin className="size-4 shrink-0" />
-          <span>{cls.location}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Users className="size-4 shrink-0" />
-          <span>{cls.instructor}</span>
-        </div>
-      </CardContent>
-      <div className="mt-auto flex items-center justify-between px-4 pb-4">
-        <span className="text-lg font-bold text-foreground">€{cls.price}</span>
-        <Button
-          size="sm"
-          asChild
-          className="bg-[#2563EB] hover:bg-[#2563EB]/90"
-        >
-          <Link to={`/classes/${cls.id}`}>View Details</Link>
-        </Button>
-      </div>
-    </Card>
   );
 }
