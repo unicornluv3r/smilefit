@@ -16,12 +16,19 @@ import { ForgotPasswordPage } from "@/pages/ForgotPasswordPage";
 import { ProfilePage } from "@/pages/ProfilePage";
 import { BookingsPage } from "@/pages/BookingsPage";
 import { InstructorProfilePage } from "@/pages/InstructorProfilePage";
-import { InstructorDashboardPage } from "@/pages/InstructorDashboardPage";
 import { CreateClassPage } from "@/pages/CreateClassPage";
 import { BecomeInstructorPage } from "@/pages/BecomeInstructorPage";
 import { InstructorRoute } from "@/components/InstructorRoute";
 import { CitiesPage } from "@/pages/CitiesPage";
 import { CityPage } from "@/pages/CityPage";
+import { DashboardLayout } from "@/pages/instructor/DashboardLayout";
+import { OverviewPage } from "@/pages/instructor/OverviewPage";
+import { ClassesManagePage } from "@/pages/instructor/ClassesManagePage";
+import { BookingsManagePage } from "@/pages/instructor/BookingsManagePage";
+import { StudentsPage } from "@/pages/instructor/StudentsPage";
+import { EarningsPage } from "@/pages/instructor/EarningsPage";
+import { ReviewsPage } from "@/pages/instructor/ReviewsPage";
+import { SettingsPage } from "@/pages/instructor/SettingsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,10 +60,18 @@ export function App() {
                 path="instructor/dashboard"
                 element={
                   <InstructorRoute>
-                    <InstructorDashboardPage />
+                    <DashboardLayout />
                   </InstructorRoute>
                 }
-              />
+              >
+                <Route index element={<OverviewPage />} />
+                <Route path="classes" element={<ClassesManagePage />} />
+                <Route path="bookings" element={<BookingsManagePage />} />
+                <Route path="students" element={<StudentsPage />} />
+                <Route path="earnings" element={<EarningsPage />} />
+                <Route path="reviews" element={<ReviewsPage />} />
+                <Route path="settings" element={<SettingsPage />} />
+              </Route>
               <Route
                 path="instructor/classes/new"
                 element={
