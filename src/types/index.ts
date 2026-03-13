@@ -1,10 +1,13 @@
 export interface Profile {
   id: string;
   email: string;
-  full_name: string;
+  full_name: string | null;
+  display_name: string | null;
   avatar_url: string | null;
-  role: "user" | "instructor";
+  bio: string | null;
+  role: "user" | "instructor" | "admin";
   city: string | null;
+  favorite_categories: string[];
   created_at: string;
   updated_at: string;
 }

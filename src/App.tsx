@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/context/AuthContext";
 import { BookingProvider } from "@/context/BookingContext";
 import { Layout } from "@/components/Layout";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { HomePage } from "@/pages/HomePage";
 import { ClassesPage } from "@/pages/ClassesPage";
 import { ClassDetailPage } from "@/pages/ClassDetailPage";
@@ -11,6 +12,9 @@ import { InstructorsPage } from "@/pages/InstructorsPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { SignUpPage } from "@/pages/SignUpPage";
+import { ForgotPasswordPage } from "@/pages/ForgotPasswordPage";
+import { ProfilePage } from "@/pages/ProfilePage";
+import { BookingsPage } from "@/pages/BookingsPage";
 import { InstructorProfilePage } from "@/pages/InstructorProfilePage";
 import { CitiesPage } from "@/pages/CitiesPage";
 import { CityPage } from "@/pages/CityPage";
@@ -44,6 +48,23 @@ export function App() {
               <Route path="login" element={<LoginPage />} />
               <Route path="signup" element={<SignUpPage />} />
               <Route path="register" element={<Navigate to="/signup" replace />} />
+              <Route path="forgot-password" element={<ForgotPasswordPage />} />
+              <Route
+                path="profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="bookings"
+                element={
+                  <ProtectedRoute>
+                    <BookingsPage />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
           </Routes>
         </BrowserRouter>

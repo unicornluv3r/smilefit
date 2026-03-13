@@ -106,16 +106,20 @@ export function ClassDetailPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogQty, setDialogQty] = useState(1);
 
-  const loadClass = () => {
+  useEffect(() => {
     setLoading(true);
     setError(false);
     const timer = setTimeout(() => {
       setLoading(false);
     }, 500);
     return () => clearTimeout(timer);
-  };
+  }, []);
 
-  useEffect(loadClass, []);
+  const loadClass = () => {
+    setLoading(true);
+    setError(false);
+    setTimeout(() => setLoading(false), 500);
+  };
 
   if (loading) return <ClassDetailSkeleton />;
   if (error) return <ClassDetailError onRetry={loadClass} />;
