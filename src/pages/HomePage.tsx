@@ -46,27 +46,34 @@ function HeroSection() {
   const { t } = useTranslation();
 
   return (
-    <section className="relative overflow-hidden border-b bg-gradient-to-b from-[#2563EB]/5 via-[#2563EB]/[0.02] to-transparent">
-      <div className="pointer-events-none absolute -top-24 left-1/4 size-96 rounded-full bg-[#2563EB]/[0.07] blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-20 right-1/4 size-72 rounded-full bg-[#2563EB]/[0.05] blur-3xl" />
+    <section className="relative min-h-[85vh] flex items-center overflow-hidden">
+      {/* Full-bleed background image */}
+      <img
+        src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=1600"
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 size-full object-cover"
+      />
+      {/* Dark gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
-      <div className="container mx-auto grid gap-12 px-4 py-16 lg:grid-cols-2 lg:items-center lg:py-24">
+      <div className="container relative mx-auto grid gap-12 px-4 py-20 lg:grid-cols-[1fr_380px] lg:items-center lg:py-28">
         <div className="flex flex-col items-start gap-6">
           <Badge
-            variant="secondary"
-            className="h-auto rounded-full px-3 py-1.5 text-xs font-medium opacity-0 animate-[fade-in_0.4s_ease-out_0.1s_forwards]"
+            className="h-auto rounded-full border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm opacity-0 animate-[fade-in_0.4s_ease-out_0.1s_forwards]"
           >
-            <Sparkles className="mr-1.5 size-3 text-[#2563EB]" />
+            <Sparkles className="mr-1.5 size-3" />
             {t("hero.badge")}
           </Badge>
 
-          <h1 className="text-4xl font-bold leading-tight tracking-tight opacity-0 animate-[slide-up_0.5s_ease-out_0.3s_forwards] sm:text-5xl lg:text-6xl">
+          <h1 className="text-4xl font-bold leading-tight tracking-tight text-white opacity-0 animate-[slide-up_0.5s_ease-out_0.3s_forwards] sm:text-5xl lg:text-6xl">
             {t("hero.title")}{" "}
-            <span className="gradient-text">{t("hero.titleHighlight")}</span>{" "}
-            {t("hero.titleEnd")}
+            <span className="text-[#60a5fa]">{t("hero.titleHighlight")}</span>
+            {t("hero.titleEnd") && <> {t("hero.titleEnd")}</>}
           </h1>
 
-          <p className="max-w-lg text-lg text-muted-foreground opacity-0 animate-[slide-up_0.5s_ease-out_0.5s_forwards]">
+          <p className="max-w-lg text-lg text-white/80 opacity-0 animate-[slide-up_0.5s_ease-out_0.5s_forwards]">
             {t("hero.description")}
           </p>
 
@@ -74,44 +81,44 @@ function HeroSection() {
             <Button
               size="lg"
               asChild
-              className="btn-shimmer bg-[#2563EB] hover:bg-[#2563EB]/90 transition-all duration-200 hover:shadow-lg hover:shadow-[#2563EB]/25"
+              className="btn-shimmer bg-white text-gray-900 hover:bg-white/90 transition-all duration-200 hover:shadow-lg"
             >
               <Link to="/classes">
                 {t("hero.browseClasses")} <ArrowRight className="ml-1 size-4" />
               </Link>
             </Button>
             <Button
-              variant="outline"
               size="lg"
               asChild
-              className="transition-all duration-200 hover:shadow-md"
+              className="border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 transition-all duration-200"
             >
               <Link to="/become-instructor">{t("hero.becomeInstructor")}</Link>
             </Button>
           </div>
 
-          <div className="mt-2 flex flex-wrap gap-6 text-sm text-muted-foreground opacity-0 animate-[fade-in_0.4s_ease-out_0.9s_forwards]">
+          <div className="mt-2 flex flex-wrap gap-6 text-sm text-white/70 opacity-0 animate-[fade-in_0.4s_ease-out_0.9s_forwards]">
             <div className="flex items-center gap-2">
-              <MapPin className="size-4 text-[#2563EB]" />
+              <MapPin className="size-4 text-[#60a5fa]" />
               <span>{t("hero.italianCities")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <CalendarDays className="size-4 text-[#2563EB]" />
+              <CalendarDays className="size-4 text-[#60a5fa]" />
               <span>{t("hero.flexibleSchedule")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Award className="size-4 text-[#2563EB]" />
+              <Award className="size-4 text-[#60a5fa]" />
               <span>{t("hero.expertTrainers")}</span>
             </div>
           </div>
         </div>
 
+        {/* Floating class card */}
         <div className="flex justify-center lg:justify-end">
           <div className="opacity-0 animate-[slide-up_0.6s_ease-out_0.5s_forwards]">
-            <Card className="group w-full max-w-sm overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+            <Card className="group w-full max-w-sm overflow-hidden bg-white/95 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
               <div className="relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=600&h=400&fit=crop"
+                  src="https://images.unsplash.com/photo-1588286840104-8957b019727f?w=800"
                   alt="Morning Yoga in Parco Sempione — outdoor yoga class in Milan"
                   className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
@@ -120,11 +127,11 @@ function HeroSection() {
                 </Badge>
               </div>
               <CardHeader>
-                <CardTitle className="text-lg">
+                <CardTitle className="text-lg text-gray-900">
                   Morning Yoga in Parco Sempione
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-col gap-2 text-sm text-muted-foreground">
+              <CardContent className="flex flex-col gap-2 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
                   <MapPin className="size-4 shrink-0" />
                   <span>Milan, Italy</span>

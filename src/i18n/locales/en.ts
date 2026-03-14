@@ -35,10 +35,10 @@ const en = {
     // ── Hero ────────────────────────────────────────────────
     hero: {
       badge: "Find outdoor sports classes in Italian cities",
-      title: "Discover and Book",
-      titleHighlight: "Outdoor Fitness",
-      titleEnd: "Classes Near You",
-      description: "Connect with professional trainers and join outdoor fitness classes in your city. From yoga and pilates to HIIT and bootcamps \u2014 find the perfect class for your active lifestyle.",
+      title: "Your Next Workout",
+      titleHighlight: "Has a Better View",
+      titleEnd: "",
+      description: "Book outdoor yoga, HIIT, pilates and more in Rome, Florence, Milan, Venice and beyond.",
       browseClasses: "Browse Classes",
       becomeInstructor: "Become an Instructor",
       italianCities: "8 Italian Cities",
@@ -112,7 +112,7 @@ const en = {
       s3Title: "Show Up & Smile",
       s3Desc: "Arrive at the outdoor location, meet your instructor, and enjoy the class.",
       s3h1: "GPS directions to the exact meeting point",
-      s3h2: "All equipment provided by the instructor",
+      s3h2: "What to bring listed on each class page",
       s3h3: "Leave a review to help the community",
       forInstructors: "For Instructors",
       instructorTitle: "Grow Your Fitness Business",
@@ -544,6 +544,62 @@ const en = {
       profileUpdated: "Profile updated",
       failedUpdateProfile: "Failed to update profile",
       allCities: "All Cities",
+      viewDetails: "View Details",
+      viewProfile: "View Profile",
+      viewClass: "View Class",
+      popular: "Popular",
+      today: "Today!",
+      with: "with {{name}}",
+      cancelledOn: "Cancelled on {{date}}",
+      findClasses: "Find Classes",
+    },
+
+    // ── Password ──────────────────────────────────────────
+    password: {
+      show: "Show password",
+      hide: "Hide password",
+      weak: "Weak",
+      fair: "Fair",
+      strong: "Strong",
+    },
+
+    // ── Social Login ──────────────────────────────────────
+    socialLogin: {
+      continueWithGoogle: "Continue with Google",
+    },
+
+    // ── Instructor Sidebar ────────────────────────────────
+    instructorSidebar: {
+      responseRate: "Response rate:",
+      responds: "Responds",
+      joined: "Joined",
+      message: "Message {{name}}",
+      usuallyResponds: "Usually responds {{time}}",
+    },
+
+    // ── Class Detail Instructor Card ──────────────────────
+    classDetailInstructor: {
+      classesTaught: "{{count}} classes taught",
+    },
+
+    // ── City Card ─────────────────────────────────────────
+    cityCard: {
+      classCount: "{{count}} classes",
+    },
+
+    // ── Booking Card (Dashboard) ──────────────────────────
+    bookingCard: {
+      cancelTitle: "Cancel this booking?",
+      cancelDesc: "Are you sure you want to cancel your booking for <1>{{name}}</1>? This action cannot be undone.",
+      cancelDescText: "Are you sure you want to cancel your booking for {{name}}? This action cannot be undone.",
+      keepBooking: "Keep Booking",
+      yesCancel: "Yes, Cancel",
+      cancelBooking: "Cancel Booking",
+      leaveReview: "Leave a Review",
+      bookAgain: "Book Again",
+      confirmed: "Confirmed",
+      completed: "Completed",
+      cancelled: "Cancelled",
     },
   },
 };

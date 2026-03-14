@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   MapPin,
@@ -92,7 +93,7 @@ function mapDbToClassDetail(
     difficulty: dbClass.difficulty,
     images: dbClass.images.length > 0
       ? dbClass.images
-      : ["https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1200"],
+      : ["https://images.unsplash.com/photo-1588286840104-8957b019727f?w=800"],
     schedule: {
       nextSession: nextSession?.start_time ?? new Date().toISOString(),
       recurring: dbClass.recurring_schedule ?? "",
@@ -146,6 +147,7 @@ function ClassDetailSkeleton() {
 }
 
 export function ClassDetailPage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -182,15 +184,15 @@ export function ClassDetailPage() {
       return (
         <div className="container mx-auto flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
           <AlertCircle className="mb-4 size-12 text-muted-foreground" />
-          <h2 className="text-xl font-semibold">Failed to load class</h2>
+          <h2 className="text-xl font-semibold">{t("classDetail.loadError")}</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Something went wrong. Please try again.
+            {t("classDetail.errorMessage")}
           </p>
           <Button
             className="mt-4 bg-[#2563EB] hover:bg-[#2563EB]/90"
             onClick={() => void refetchClass()}
           >
-            Try Again
+            {t("classDetail.tryAgain")}
           </Button>
         </div>
       );
@@ -215,11 +217,11 @@ export function ClassDetailPage() {
         {/* Breadcrumb */}
         <nav className="mb-6 flex items-center gap-1 text-sm text-muted-foreground">
           <Link to="/" className="hover:text-foreground">
-            Home
+            {t("classDetail.home")}
           </Link>
           <ChevronRight className="size-3.5" />
           <Link to="/classes" className="hover:text-foreground">
-            Find Classes
+            {t("classDetail.findClasses")}
           </Link>
           <ChevronRight className="size-3.5" />
           <span className="text-foreground">{cls.title}</span>
@@ -288,11 +290,10 @@ export function ClassDetailPage() {
                         : "text-green-600"
                   }`}
                 >
-                  {cls.spotsRemaining} spot{cls.spotsRemaining !== 1 && "s"}{" "}
-                  remaining
+                  {t("classDetail.spotsRemaining", { count: cls.spotsRemaining })}
                 </span>
                 <span className="text-muted-foreground">
-                  out of {cls.spotsTotal}
+                  {t("classDetail.outOf", { total: cls.spotsTotal })}
                 </span>
               </div>
             </div>
@@ -301,7 +302,7 @@ export function ClassDetailPage() {
 
             {/* Instructor */}
             <section>
-              <h2 className="mb-4 text-lg font-semibold">Your Instructor</h2>
+              <h2 className="mb-4 text-lg font-semibold">{t("classDetail.yourInstructor")}</h2>
               <InstructorCard instructor={cls.instructor} />
             </section>
 
@@ -309,7 +310,7 @@ export function ClassDetailPage() {
 
             {/* About */}
             <section>
-              <h2 className="mb-3 text-lg font-semibold">About This Class</h2>
+              <h2 className="mb-3 text-lg font-semibold">{t("classDetail.aboutThisClass")}</h2>
               <div
                 className={`relative text-sm leading-relaxed text-muted-foreground ${
                   !showFullDesc ? "max-h-[6.5rem] overflow-hidden" : ""
@@ -328,7 +329,7 @@ export function ClassDetailPage() {
                 onClick={() => setShowFullDesc((v) => !v)}
                 className="mt-2 text-sm font-medium text-[#2563EB] hover:underline"
               >
-                {showFullDesc ? "Show less" : "Read more"}
+                {showFullDesc ? t("classDetail.showLess") : t("classDetail.readMore")}
               </button>
             </section>
 
@@ -337,7 +338,7 @@ export function ClassDetailPage() {
             {/* Schedule & Availability */}
             <section>
               <h2 className="mb-3 text-lg font-semibold">
-                Schedule &amp; Availability
+                {t("classDetail.schedule")}
               </h2>
               {usingSupabase && sessions.length > 0 ? (
                 <div className="space-y-2">
@@ -377,15 +378,15 @@ export function ClassDetailPage() {
                           }`}
                         >
                           {soldOut
-                            ? "Sold out"
-                            : `${session.spots_remaining} spots`}
+                            ? t("classes.soldOut")
+                            : t("classes.spotsLeft", { count: session.spots_remaining })}
                         </span>
                       </button>
                     );
                   })}
                   {sessions.length > 6 && (
                     <p className="text-center text-xs text-muted-foreground">
-                      +{sessions.length - 6} more sessions
+                      {t("classDetail.moreSessions", { count: sessions.length - 6 })}
                     </p>
                   )}
                 </div>
@@ -394,7 +395,7 @@ export function ClassDetailPage() {
                   <div className="flex items-center gap-2">
                     <CalendarDays className="size-4 text-[#2563EB]" />
                     <span>
-                      <span className="font-medium">Next session: </span>
+                      <span className="font-medium">{t("classDetail.nextSession")}: </span>
                       {new Date(cls.schedule.nextSession).toLocaleDateString(
                         "en-GB",
                         {
@@ -420,7 +421,7 @@ export function ClassDetailPage() {
 
             {/* Location */}
             <section>
-              <h2 className="mb-3 text-lg font-semibold">Location</h2>
+              <h2 className="mb-3 text-lg font-semibold">{t("classDetail.location")}</h2>
               <p className="text-sm font-medium">{cls.location.name}</p>
               <p className="text-sm text-muted-foreground">
                 {cls.location.address}
@@ -428,7 +429,7 @@ export function ClassDetailPage() {
               <div className="mt-3 flex h-[200px] items-center justify-center rounded-xl bg-muted">
                 <div className="flex flex-col items-center gap-2 text-muted-foreground">
                   <MapPin className="size-8" />
-                  <span className="text-sm">Interactive map coming soon</span>
+                  <span className="text-sm">{t("classDetail.mapSoon")}</span>
                 </div>
               </div>
             </section>
@@ -436,18 +437,21 @@ export function ClassDetailPage() {
             <Separator />
 
             {/* What to Bring */}
-            <section>
-              <h2 className="mb-4 text-lg font-semibold">What to Bring</h2>
+            <section className="rounded-xl border-2 border-blue-100 bg-blue-50/50 p-5">
+              <h2 className="mb-4 flex items-center gap-2 text-lg font-bold">
+                <Backpack className="size-5 text-[#2563EB]" />
+                {t("classDetail.whatToBring")}
+              </h2>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {cls.whatToBring.map((item) => {
                   const Icon = BRING_ICONS[item] ?? Sparkles;
                   return (
                     <div
                       key={item}
-                      className="flex items-center gap-2.5 rounded-lg border p-3 text-sm"
+                      className="flex items-center gap-2.5 rounded-lg border border-blue-200 bg-white p-3 text-sm shadow-sm"
                     >
-                      <Icon className="size-4 shrink-0 text-[#2563EB]" />
-                      <span>{item}</span>
+                      <Icon className="size-5 shrink-0 text-[#2563EB]" />
+                      <span className="font-medium">{item}</span>
                     </div>
                   );
                 })}
@@ -461,7 +465,7 @@ export function ClassDetailPage() {
               <div className="flex items-start gap-3 rounded-xl border bg-muted/30 p-4">
                 <ShieldCheck className="mt-0.5 size-5 shrink-0 text-green-600" />
                 <div>
-                  <h3 className="text-sm font-semibold">Cancellation Policy</h3>
+                  <h3 className="text-sm font-semibold">{t("classDetail.cancellationPolicy")}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                     {cls.cancellationPolicy}
                   </p>
@@ -474,7 +478,7 @@ export function ClassDetailPage() {
             {/* Reviews */}
             <section>
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Reviews</h2>
+                <h2 className="text-lg font-semibold">{t("classDetail.reviews")}</h2>
                 <AverageRating
                   rating={Number(avgRating.toFixed(1))}
                   count={cls.reviews.length}
@@ -486,7 +490,7 @@ export function ClassDetailPage() {
                 ))}
               </div>
               <Button variant="outline" className="mt-4 w-full">
-                See all reviews
+                {t("classDetail.seeAllReviews")}
               </Button>
             </section>
           </div>

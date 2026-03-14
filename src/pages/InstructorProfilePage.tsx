@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router-dom";
 import { ChevronRight, BadgeCheck, Star, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { MOCK_INSTRUCTOR } from "@/data/mockInstructor";
 import type { InstructorProfile as MockInstructorProfile } from "@/data/mockInstructor";
+import { MOCK_INSTRUCTORS } from "@/data/mockInstructors";
 import { InstructorHeader } from "@/components/instructor-profile/InstructorHeader";
 import { InstructorClassCard } from "@/components/instructor-profile/InstructorClassCard";
 import { InstructorReviewCard } from "@/components/instructor-profile/InstructorReviewCard";
@@ -52,7 +54,7 @@ function dbToMockProfile(
       profile.avatar_url ??
       `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.full_name ?? "I")}&background=2563EB&color=fff&size=300`,
     coverImageUrl:
-      "https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=1400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800",
     tagline: profile.specialties?.slice(0, 3).join(", ") ?? "",
     bio: profile.bio ?? "",
     city: profile.city ?? "",
@@ -100,7 +102,79 @@ function dbToMockProfile(
   };
 }
 
+function buildProfileFromMockOrClasses(
+  id: string,
+  allClasses: DbClass[],
+): MockInstructorProfile | null {
+  // Check mock instructors by ID
+  const mock = MOCK_INSTRUCTORS.find((m) => m.id === id);
+  // Check class-derived instructors
+  const classMatch = allClasses.find(
+    (c) =>
+      c.instructor_id === id ||
+      `class-instructor-${c.instructor_name?.toLowerCase().replace(/\s+/g, "-")}` === id,
+  );
+
+  const name = mock?.name ?? classMatch?.instructor_name;
+  if (!name) return null;
+
+  const matchingClasses = allClasses.filter(
+    (c) =>
+      c.instructor_name === name ||
+      c.instructor_id === id,
+  );
+
+  const specialties = mock
+    ? mock.specialty.split(" & ")
+    : classMatch?.instructor_specialties?.length
+      ? classMatch.instructor_specialties
+      : matchingClasses.map((c) => c.category).filter((v, i, a) => a.indexOf(v) === i);
+
+  const city = mock?.city ?? classMatch?.city ?? "";
+
+  return {
+    id,
+    name,
+    avatarUrl:
+      mock?.avatar ??
+      classMatch?.instructor_avatar ??
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=2563EB&color=fff&size=300`,
+    coverImageUrl:
+      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800",
+    tagline: specialties.slice(0, 3).join(", "),
+    bio: classMatch?.instructor_bio ?? `${name} is an outdoor fitness instructor based in ${city}, specializing in ${specialties.join(", ")}.`,
+    city,
+    languages: ["Italian", "English"],
+    specialties,
+    certifications: [],
+    yearsExperience: 0,
+    rating: mock?.rating ?? Number(classMatch?.instructor_rating ?? 0),
+    reviewCount: mock?.reviewCount ?? 0,
+    totalStudents: (mock?.reviewCount ?? 0) * 8,
+    responseRate: "95%",
+    responseTime: "within 2 hours",
+    joinedDate: "2025",
+    classes: matchingClasses.map((cls) => ({
+      id: cls.id,
+      title: cls.title,
+      category: cls.category,
+      city: cls.city,
+      price: Number(cls.price),
+      currency: "EUR",
+      rating: Number(cls.instructor_rating ?? mock?.rating ?? 0),
+      reviewCount: 0,
+      imageUrl: cls.images[0]?.replace("w=1200", "w=600") ?? "",
+      difficulty: cls.difficulty,
+      spotsRemaining: cls.spots_total,
+      nextSession: new Date(Date.now() + 86400000 * 3).toISOString(),
+    })),
+    reviews: [],
+    socialLinks: {},
+  };
+}
+
 export function InstructorProfilePage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const { data: dbInstructor, isLoading, error } = useInstructor(id);
   const { data: dbReviews } = useInstructorReviews(id);
@@ -119,8 +193,13 @@ export function InstructorProfilePage() {
         dbReviews ?? [],
       );
     }
+    // Try to build from mock instructors or class-derived data
+    if (id) {
+      const built = buildProfileFromMockOrClasses(id, allClasses ?? []);
+      if (built) return built;
+    }
     return MOCK_INSTRUCTOR;
-  }, [dbInstructor, error, instructorClasses, dbReviews]);
+  }, [dbInstructor, error, instructorClasses, dbReviews, id, allClasses]);
 
   const [showFullBio, setShowFullBio] = useState(false);
   const [showAllReviews, setShowAllReviews] = useState(false);
@@ -148,11 +227,11 @@ export function InstructorProfilePage() {
         {/* Breadcrumb */}
         <nav className="mb-6 flex items-center gap-1 text-sm text-muted-foreground">
           <Link to="/" className="hover:text-foreground">
-            Home
+            {t("instructorProfile.home")}
           </Link>
           <ChevronRight className="size-3.5" />
           <Link to="/instructors" className="hover:text-foreground">
-            Instructors
+            {t("instructorProfile.instructors")}
           </Link>
           <ChevronRight className="size-3.5" />
           <span className="text-foreground">{instructor.name}</span>
@@ -167,7 +246,7 @@ export function InstructorProfilePage() {
           <div className="min-w-0 space-y-10">
             {/* About */}
             <section>
-              <h2 className="mb-3 text-lg font-semibold">About</h2>
+              <h2 className="mb-3 text-lg font-semibold">{t("instructorProfile.about")}</h2>
               <div
                 className={`relative text-sm leading-relaxed text-muted-foreground ${
                   !showFullBio ? "max-h-[7.5rem] overflow-hidden" : ""
@@ -186,7 +265,7 @@ export function InstructorProfilePage() {
                 onClick={() => setShowFullBio((v) => !v)}
                 className="mt-2 text-sm font-medium text-[#2563EB] hover:underline"
               >
-                {showFullBio ? "Show less" : "Read more"}
+                {showFullBio ? t("instructorProfile.showLess") : t("instructorProfile.readMore")}
               </button>
             </section>
 
@@ -194,7 +273,7 @@ export function InstructorProfilePage() {
 
             {/* Specialties & Certifications */}
             <section>
-              <h2 className="mb-4 text-lg font-semibold">Specialties</h2>
+              <h2 className="mb-4 text-lg font-semibold">{t("instructorProfile.specialties")}</h2>
               <div className="flex flex-wrap gap-2">
                 {instructor.specialties.map((s) => (
                   <Badge
@@ -208,7 +287,7 @@ export function InstructorProfilePage() {
               </div>
 
               <h3 className="mb-3 mt-6 text-base font-semibold">
-                Certifications
+                {t("instructorProfile.certifications")}
               </h3>
               <ul className="space-y-2">
                 {instructor.certifications.map((c) => (
@@ -225,10 +304,9 @@ export function InstructorProfilePage() {
             {/* Classes */}
             <section>
               <h2 className="mb-4 text-lg font-semibold">
-                Classes by {instructor.name.split(" ")[0]}{" "}
+                {t("instructorProfile.classesBy", { name: instructor.name.split(" ")[0] })}{" "}
                 <span className="text-sm font-normal text-muted-foreground">
-                  ({instructor.classes.length} class
-                  {instructor.classes.length !== 1 && "es"})
+                  ({t("instructorProfile.classCount", { count: instructor.classes.length })})
                 </span>
               </h2>
               {instructor.classes.length > 0 ? (
@@ -239,7 +317,7 @@ export function InstructorProfilePage() {
                 </div>
               ) : (
                 <p className="py-4 text-sm text-muted-foreground">
-                  No classes listed yet.
+                  {t("instructorProfile.noClasses")}
                 </p>
               )}
             </section>
@@ -249,14 +327,14 @@ export function InstructorProfilePage() {
             {/* Reviews */}
             <section>
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Reviews</h2>
+                <h2 className="text-lg font-semibold">{t("instructorProfile.reviews")}</h2>
                 <div className="flex items-center gap-2">
                   <Star className="size-5 fill-amber-400 text-amber-400" />
                   <span className="text-xl font-bold">
                     {avgRating.toFixed(1)}
                   </span>
                   <span className="text-sm text-muted-foreground">
-                    ({instructor.reviewCount} reviews)
+                    ({t("instructorProfile.reviewCount", { count: instructor.reviewCount })})
                   </span>
                 </div>
               </div>
@@ -268,7 +346,7 @@ export function InstructorProfilePage() {
                 </div>
               ) : (
                 <p className="py-4 text-sm text-muted-foreground">
-                  No reviews yet.
+                  {t("instructorProfile.noReviews")}
                 </p>
               )}
               {instructor.reviews.length > 3 && (
@@ -278,8 +356,8 @@ export function InstructorProfilePage() {
                   onClick={() => setShowAllReviews((v) => !v)}
                 >
                   {showAllReviews
-                    ? "Show fewer reviews"
-                    : `Show all ${instructor.reviews.length} reviews`}
+                    ? t("instructorProfile.showFewerReviews")
+                    : t("instructorProfile.showAllReviews", { count: instructor.reviews.length })}
                 </Button>
               )}
             </section>
