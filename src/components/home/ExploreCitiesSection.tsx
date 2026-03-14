@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CityCard } from "@/components/city/CityCard";
@@ -8,6 +9,7 @@ import { useInView } from "@/hooks/useInView";
 const TOP_CITIES = MOCK_CITIES.slice(0, 4);
 
 export function ExploreCitiesSection() {
+  const { t } = useTranslation();
   const { ref, inView } = useInView();
 
   return (
@@ -19,11 +21,11 @@ export function ExploreCitiesSection() {
           }`}
         >
           <h2 className="text-3xl font-bold tracking-tight">
-            Explore by City
+            {t("exploreCities.title")}
           </h2>
           <Button variant="ghost" asChild>
             <Link to="/cities">
-              View all cities <ArrowRight className="ml-1 size-4" />
+              {t("exploreCities.viewAll")} <ArrowRight className="ml-1 size-4" />
             </Link>
           </Button>
         </div>

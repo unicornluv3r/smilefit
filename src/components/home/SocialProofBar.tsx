@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { MapPin, Users, Star, CalendarCheck } from "lucide-react";
 import { useInView } from "@/hooks/useInView";
 import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
@@ -7,18 +8,19 @@ interface StatConfig {
   value: number;
   suffix: string;
   prefix: string;
-  label: string;
+  labelKey: string;
   decimals: number;
 }
 
 const STATS: StatConfig[] = [
-  { icon: CalendarCheck, value: 500, suffix: "+", prefix: "", label: "Classes Available", decimals: 0 },
-  { icon: Users, value: 50, suffix: "+", prefix: "", label: "Expert Instructors", decimals: 0 },
-  { icon: MapPin, value: 8, suffix: "", prefix: "", label: "Italian Cities", decimals: 0 },
-  { icon: Star, value: 4.8, suffix: "", prefix: "", label: "Average Rating", decimals: 1 },
+  { icon: CalendarCheck, value: 500, suffix: "+", prefix: "", labelKey: "stats.classesAvailable", decimals: 0 },
+  { icon: Users, value: 50, suffix: "+", prefix: "", labelKey: "stats.expertInstructors", decimals: 0 },
+  { icon: MapPin, value: 8, suffix: "", prefix: "", labelKey: "stats.italianCities", decimals: 0 },
+  { icon: Star, value: 4.8, suffix: "", prefix: "", labelKey: "stats.averageRating", decimals: 1 },
 ];
 
 function AnimatedStat({ stat, inView, delay }: { stat: StatConfig; inView: boolean; delay: number }) {
+  const { t } = useTranslation();
   const count = useAnimatedCounter(stat.value, 1400, inView);
   const display = stat.decimals > 0
     ? count.toFixed(stat.decimals)
@@ -35,7 +37,7 @@ function AnimatedStat({ stat, inView, delay }: { stat: StatConfig; inView: boole
       <span className="text-2xl font-bold tabular-nums">
         {stat.prefix}{display}{stat.suffix}
       </span>
-      <span className="text-sm text-muted-foreground">{stat.label}</span>
+      <span className="text-sm text-muted-foreground">{t(stat.labelKey)}</span>
     </div>
   );
 }
@@ -48,7 +50,7 @@ export function SocialProofBar() {
       <div className="container mx-auto grid grid-cols-2 gap-6 px-4 md:grid-cols-4">
         {STATS.map((stat, i) => (
           <AnimatedStat
-            key={stat.label}
+            key={stat.labelKey}
             stat={stat}
             inView={inView}
             delay={i * 100}

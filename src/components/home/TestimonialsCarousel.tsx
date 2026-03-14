@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useInView } from "@/hooks/useInView";
@@ -61,6 +62,7 @@ export function TestimonialsCarousel() {
   const [animating, setAnimating] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval>>(null);
   const pausedRef = useRef(false);
+  const { t } = useTranslation();
   const { ref: sectionRef, inView } = useInView();
 
   const goTo = useCallback(
@@ -94,7 +96,7 @@ export function TestimonialsCarousel() {
     };
   }, [next]);
 
-  const t = TESTIMONIALS[current];
+  const currentTestimonial = TESTIMONIALS[current];
 
   const slideClass = animating
     ? direction === "right"
@@ -110,7 +112,7 @@ export function TestimonialsCarousel() {
             inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
-          What Our Community Says
+          {t("testimonials.title")}
         </h2>
 
         <div
@@ -133,7 +135,7 @@ export function TestimonialsCarousel() {
             <Quote className="absolute top-4 left-4 size-8 text-[#2563EB]/10 -scale-x-100" />
 
             <div className="mb-4 flex justify-center gap-1">
-              {Array.from({ length: t.rating }).map((_, i) => (
+              {Array.from({ length: currentTestimonial.rating }).map((_, i) => (
                 <Star
                   key={i}
                   className="size-5 fill-yellow-400 text-yellow-400"
@@ -142,19 +144,19 @@ export function TestimonialsCarousel() {
             </div>
 
             <blockquote className="mb-6 text-lg text-muted-foreground italic leading-relaxed">
-              &ldquo;{t.quote}&rdquo;
+              &ldquo;{currentTestimonial.quote}&rdquo;
             </blockquote>
 
             <div className="flex flex-col items-center gap-2">
               <img
-                src={t.avatar}
-                alt={`Photo of ${t.author}`}
+                src={currentTestimonial.avatar}
+                alt={`Photo of ${currentTestimonial.author}`}
                 className="size-12 rounded-full object-cover ring-2 ring-background shadow-sm"
               />
               <div>
-                <p className="font-semibold">{t.author}</p>
+                <p className="font-semibold">{currentTestimonial.author}</p>
                 <p className="text-sm text-muted-foreground">
-                  {t.className} · {t.city}
+                  {currentTestimonial.className} · {currentTestimonial.city}
                 </p>
               </div>
             </div>
@@ -165,7 +167,7 @@ export function TestimonialsCarousel() {
             size="icon"
             onClick={prev}
             className="absolute top-1/2 -left-4 -translate-y-1/2 rounded-full shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105"
-            aria-label="Previous testimonial"
+            aria-label={t("testimonials.prev")}
           >
             <ChevronLeft className="size-4" />
           </Button>
@@ -174,7 +176,7 @@ export function TestimonialsCarousel() {
             size="icon"
             onClick={next}
             className="absolute top-1/2 -right-4 -translate-y-1/2 rounded-full shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105"
-            aria-label="Next testimonial"
+            aria-label={t("testimonials.next")}
           >
             <ChevronRight className="size-4" />
           </Button>
@@ -191,7 +193,7 @@ export function TestimonialsCarousel() {
                     ? "h-2.5 w-6 bg-[#2563EB]"
                     : "size-2.5 bg-muted-foreground/30 hover:bg-muted-foreground/50"
                 }`}
-                aria-label={`Go to testimonial ${i + 1}`}
+                aria-label={t("testimonials.goTo", { n: i + 1 })}
               />
             ))}
           </div>

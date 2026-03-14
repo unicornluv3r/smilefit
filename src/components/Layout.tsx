@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Toaster } from "sonner";
 import { Menu, Instagram, Facebook, Twitter, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,14 +12,15 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { UserMenu } from "@/components/auth/UserMenu";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { LanguageSwitcher, LanguageSwitcherMobile } from "@/components/LanguageSwitcher";
 
-const NAV_LINKS = [
-  { to: "/", label: "Home" },
-  { to: "/classes", label: "Find Classes" },
-  { to: "/cities", label: "Cities" },
-  { to: "/how-it-works", label: "How It Works" },
-  { to: "/instructors", label: "Instructors" },
-  { to: "/dashboard", label: "Instructor Dashboard" },
+const NAV_KEYS = [
+  { to: "/", key: "nav.home" },
+  { to: "/classes", key: "nav.findClasses" },
+  { to: "/cities", key: "nav.cities" },
+  { to: "/how-it-works", key: "nav.howItWorks" },
+  { to: "/instructors", key: "nav.instructors" },
+  { to: "/dashboard", key: "nav.instructorDashboard" },
 ] as const;
 
 export function Layout() {
@@ -36,6 +38,7 @@ export function Layout() {
 }
 
 function Navbar() {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const scrollY = useScrollPosition();
   const { pathname } = useLocation();
@@ -69,7 +72,7 @@ function Navbar() {
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">
-            {NAV_LINKS.map((link) => (
+            {NAV_KEYS.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
@@ -77,7 +80,7 @@ function Navbar() {
                   isActive(link.to) ? "text-foreground" : "text-muted-foreground"
                 }`}
               >
-                {link.label}
+                {t(link.key)}
                 {isActive(link.to) && (
                   <span className="absolute -bottom-[1.19rem] inset-x-0 h-0.5 bg-[#2563EB] rounded-full" />
                 )}
@@ -87,6 +90,8 @@ function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+
           {loading ? (
             <>
               <div className="h-8 w-16 animate-pulse rounded-lg bg-muted" />
@@ -97,14 +102,14 @@ function Navbar() {
           ) : (
             <>
               <Button variant="ghost" size="sm" asChild className="hidden md:inline-flex">
-                <Link to="/login">Log In</Link>
+                <Link to="/login">{t("nav.logIn")}</Link>
               </Button>
               <Button
                 size="sm"
                 asChild
                 className="hidden bg-[#2563EB] hover:bg-[#2563EB]/90 md:inline-flex transition-all duration-200 hover:shadow-md hover:shadow-[#2563EB]/25"
               >
-                <Link to="/signup">Sign Up</Link>
+                <Link to="/signup">{t("nav.signUp")}</Link>
               </Button>
             </>
           )}
@@ -116,14 +121,14 @@ function Navbar() {
                 variant="ghost"
                 size="icon"
                 className="md:hidden"
-                aria-label="Open navigation menu"
+                aria-label={t("nav.openMenu")}
               >
                 <Menu className="size-5" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" aria-label="Navigation menu">
               <nav className="mt-8 flex flex-col gap-4">
-                {NAV_LINKS.map((link) => (
+                {NAV_KEYS.map((link) => (
                   <Link
                     key={link.to}
                     to={link.to}
@@ -132,23 +137,26 @@ function Navbar() {
                       isActive(link.to) ? "text-foreground" : "text-muted-foreground"
                     }`}
                   >
-                    {link.label}
+                    {t(link.key)}
                   </Link>
                 ))}
                 {!loading && !user && (
                   <div className="mt-4 flex flex-col gap-2 border-t pt-4">
                     <Button variant="outline" asChild onClick={() => setMobileOpen(false)}>
-                      <Link to="/login">Log In</Link>
+                      <Link to="/login">{t("nav.logIn")}</Link>
                     </Button>
                     <Button
                       asChild
                       className="bg-[#2563EB] hover:bg-[#2563EB]/90"
                       onClick={() => setMobileOpen(false)}
                     >
-                      <Link to="/signup">Sign Up</Link>
+                      <Link to="/signup">{t("nav.signUp")}</Link>
                     </Button>
                   </div>
                 )}
+                <div className="mt-4 border-t pt-4">
+                  <LanguageSwitcherMobile />
+                </div>
               </nav>
             </SheetContent>
           </Sheet>
@@ -159,6 +167,8 @@ function Navbar() {
 }
 
 function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="relative bg-muted/30">
       {/* Gradient top border */}
@@ -173,8 +183,7 @@ function Footer() {
               <span className="text-foreground">Fit</span>
             </Link>
             <p className="mt-2 text-sm text-muted-foreground">
-              Outdoor fitness classes across Italy. Train in the open air with
-              expert instructors.
+              {t("footer.tagline")}
             </p>
             <div className="mt-4 flex gap-3">
               <a href="https://instagram.com/joinsmilefit" target="_blank" rel="noopener noreferrer">
@@ -208,34 +217,34 @@ function Footer() {
 
           {/* Explore */}
           <div>
-            <h4 className="mb-3 font-semibold">Explore</h4>
+            <h4 className="mb-3 font-semibold">{t("footer.explore")}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/classes" className="transition-colors duration-200 hover:text-foreground">Find Classes</Link></li>
-              <li><Link to="/cities" className="transition-colors duration-200 hover:text-foreground">Browse Cities</Link></li>
-              <li><Link to="/instructors" className="transition-colors duration-200 hover:text-foreground">Instructors</Link></li>
-              <li><Link to="/how-it-works" className="transition-colors duration-200 hover:text-foreground">How It Works</Link></li>
+              <li><Link to="/classes" className="transition-colors duration-200 hover:text-foreground">{t("nav.findClasses")}</Link></li>
+              <li><Link to="/cities" className="transition-colors duration-200 hover:text-foreground">{t("footer.browseCities")}</Link></li>
+              <li><Link to="/instructors" className="transition-colors duration-200 hover:text-foreground">{t("nav.instructors")}</Link></li>
+              <li><Link to="/how-it-works" className="transition-colors duration-200 hover:text-foreground">{t("nav.howItWorks")}</Link></li>
             </ul>
           </div>
 
           {/* Company */}
           <div>
-            <h4 className="mb-3 font-semibold">Company</h4>
+            <h4 className="mb-3 font-semibold">{t("footer.company")}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/about" className="transition-colors duration-200 hover:text-foreground">About Us</Link></li>
-              <li><Link to="/become-instructor" className="transition-colors duration-200 hover:text-foreground">Become an Instructor</Link></li>
-              <li><Link to="/careers" className="transition-colors duration-200 hover:text-foreground">Careers</Link></li>
-              <li><Link to="/blog" className="transition-colors duration-200 hover:text-foreground">Blog</Link></li>
+              <li><Link to="/about" className="transition-colors duration-200 hover:text-foreground">{t("footer.aboutUs")}</Link></li>
+              <li><Link to="/become-instructor" className="transition-colors duration-200 hover:text-foreground">{t("footer.becomeInstructor")}</Link></li>
+              <li><Link to="/careers" className="transition-colors duration-200 hover:text-foreground">{t("footer.careers")}</Link></li>
+              <li><Link to="/blog" className="transition-colors duration-200 hover:text-foreground">{t("footer.blog")}</Link></li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h4 className="mb-3 font-semibold">Support</h4>
+            <h4 className="mb-3 font-semibold">{t("footer.support")}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/help" className="transition-colors duration-200 hover:text-foreground">Help Center</Link></li>
-              <li><Link to="/contact" className="transition-colors duration-200 hover:text-foreground">Contact Us</Link></li>
-              <li><Link to="/privacy" className="transition-colors duration-200 hover:text-foreground">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="transition-colors duration-200 hover:text-foreground">Terms of Service</Link></li>
+              <li><Link to="/help" className="transition-colors duration-200 hover:text-foreground">{t("footer.helpCenter")}</Link></li>
+              <li><Link to="/contact" className="transition-colors duration-200 hover:text-foreground">{t("footer.contactUs")}</Link></li>
+              <li><Link to="/privacy" className="transition-colors duration-200 hover:text-foreground">{t("footer.privacyPolicy")}</Link></li>
+              <li><Link to="/terms" className="transition-colors duration-200 hover:text-foreground">{t("footer.termsOfService")}</Link></li>
             </ul>
           </div>
         </div>
@@ -243,9 +252,7 @@ function Footer() {
 
       <div className="border-t py-4">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()}{" "}
-          <span className="text-[#2563EB]">Smile</span>
-          <span className="text-foreground">Fit</span>. All rights reserved.
+          {t("footer.copyright", { year: new Date().getFullYear() })}
         </div>
       </div>
     </footer>
@@ -253,6 +260,7 @@ function Footer() {
 }
 
 function BackToTop() {
+  const { t } = useTranslation();
   const scrollY = useScrollPosition();
   const visible = scrollY > 400;
 
@@ -264,7 +272,7 @@ function BackToTop() {
           ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-4 pointer-events-none"
       }`}
-      aria-label="Back to top"
+      aria-label={t("footer.backToTop")}
     >
       <ArrowUp className="size-4" />
     </button>
