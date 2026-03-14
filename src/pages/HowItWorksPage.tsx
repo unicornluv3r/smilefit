@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import {
   Search,
@@ -108,6 +109,7 @@ function BenefitCard({
 // ─── Page ────────────────────────────────────────────────────────────
 
 export function HowItWorksPage() {
+  const { t } = useTranslation();
   return (
     <div className="animate-[fade-in-up_0.5s_ease-out]">
       {/* Hero */}
@@ -116,17 +118,13 @@ export function HowItWorksPage() {
           <FadeIn>
             <div className="mx-auto inline-flex items-center gap-2 rounded-full bg-[#2563EB]/10 px-4 py-1.5 text-sm font-medium text-[#2563EB]">
               <Sun className="size-4" />
-              Simple. Social. Outdoors.
+              {t("howItWorksPage.badge")}
             </div>
             <h1 className="mx-auto mt-6 max-w-2xl text-4xl font-bold tracking-tight sm:text-5xl">
-              How{" "}
-              <span className="text-[#2563EB]">Smile</span>Fit Works
+              {t("howItWorksPage.title")}
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
-              Discover outdoor fitness classes across Italy&apos;s most beautiful
-              cities. Whether you&apos;re a student looking for your next class
-              or an instructor ready to share your passion — getting started
-              takes minutes.
+              {t("howItWorksPage.subtitle")}
             </p>
           </FadeIn>
         </div>
@@ -140,14 +138,13 @@ export function HowItWorksPage() {
           <FadeIn>
             <div className="text-center">
               <span className="inline-block rounded-full bg-[#2563EB]/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[#2563EB]">
-                For Students
+                {t("howItWorksPage.forStudents")}
               </span>
               <h2 className="mt-3 text-3xl font-bold">
-                Find Your Perfect Class
+                {t("howItWorksPage.studentTitle")}
               </h2>
               <p className="mx-auto mt-2 max-w-lg text-muted-foreground">
-                From sunrise yoga in Rome to beachside bootcamp in Palermo — book
-                your next outdoor workout in three simple steps.
+                {t("howItWorksPage.studentSubtitle")}
               </p>
             </div>
           </FadeIn>
@@ -161,12 +158,12 @@ export function HowItWorksPage() {
                 <StepCard
                   step={1}
                   icon={Search}
-                  title="Browse Classes"
-                  description="Explore hundreds of outdoor fitness classes across Italy's top cities."
+                  title={t("howItWorksPage.s1Title")}
+                  description={t("howItWorksPage.s1Desc")}
                   highlights={[
-                    "Search by city, category, or schedule",
-                    "Filter by price, difficulty, and distance",
-                    "See real reviews from other students",
+                    t("howItWorksPage.s1h1"),
+                    t("howItWorksPage.s1h2"),
+                    t("howItWorksPage.s1h3"),
                   ]}
                 />
               </FadeIn>
@@ -174,12 +171,12 @@ export function HowItWorksPage() {
                 <StepCard
                   step={2}
                   icon={CreditCard}
-                  title="Book & Pay"
-                  description="Reserve your spot in seconds with our secure checkout powered by Stripe."
+                  title={t("howItWorksPage.s2Title")}
+                  description={t("howItWorksPage.s2Desc")}
                   highlights={[
-                    "Instant confirmation via email",
-                    "Secure payment processing",
-                    "Free cancellation up to 24 hours before",
+                    t("howItWorksPage.s2h1"),
+                    t("howItWorksPage.s2h2"),
+                    t("howItWorksPage.s2h3"),
                   ]}
                 />
               </FadeIn>
@@ -187,12 +184,12 @@ export function HowItWorksPage() {
                 <StepCard
                   step={3}
                   icon={Sun}
-                  title="Show Up & Smile"
-                  description="Arrive at the outdoor location, meet your instructor, and enjoy the class."
+                  title={t("howItWorksPage.s3Title")}
+                  description={t("howItWorksPage.s3Desc")}
                   highlights={[
-                    "GPS directions to the exact meeting point",
-                    "All equipment provided by the instructor",
-                    "Leave a review to help the community",
+                    t("howItWorksPage.s3h1"),
+                    "What to bring listed on each class page",
+                    t("howItWorksPage.s3h3"),
                   ]}
                 />
               </FadeIn>
@@ -207,15 +204,13 @@ export function HowItWorksPage() {
           <FadeIn>
             <div className="text-center">
               <span className="inline-block rounded-full bg-[#2563EB]/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[#2563EB]">
-                For Instructors
+                {t("howItWorksPage.forInstructors")}
               </span>
               <h2 className="mt-3 text-3xl font-bold">
-                Grow Your Fitness Business
+                {t("howItWorksPage.instructorTitle")}
               </h2>
               <p className="mx-auto mt-2 max-w-lg text-muted-foreground">
-                Turn your passion into a thriving outdoor fitness business.
-                Reach new students, manage your schedule, and get paid — all in
-                one platform.
+                {t("howItWorksPage.instructorSubtitle")}
               </p>
             </div>
           </FadeIn>
@@ -228,12 +223,12 @@ export function HowItWorksPage() {
                 <StepCard
                   step={1}
                   icon={UserPlus}
-                  title="Create Your Profile"
-                  description="Build a professional instructor profile that showcases your expertise."
+                  title={t("howItWorksPage.i1Title")}
+                  description={t("howItWorksPage.i1Desc")}
                   highlights={[
-                    "Highlight specialties and certifications",
-                    "Add your bio, photos, and social links",
-                    "Get verified for increased visibility",
+                    t("howItWorksPage.i1h1"),
+                    t("howItWorksPage.i1h2"),
+                    t("howItWorksPage.i1h3"),
                   ]}
                 />
               </FadeIn>
@@ -241,12 +236,12 @@ export function HowItWorksPage() {
                 <StepCard
                   step={2}
                   icon={CalendarPlus}
-                  title="List Your Classes"
-                  description="Create and manage outdoor fitness classes with a powerful instructor dashboard."
+                  title={t("howItWorksPage.i2Title")}
+                  description={t("howItWorksPage.i2Desc")}
                   highlights={[
-                    "Set your own schedule and pricing",
-                    "Define capacity and difficulty level",
-                    "Add photos, descriptions, and requirements",
+                    t("howItWorksPage.i2h1"),
+                    t("howItWorksPage.i2h2"),
+                    t("howItWorksPage.i2h3"),
                   ]}
                 />
               </FadeIn>
@@ -254,12 +249,12 @@ export function HowItWorksPage() {
                 <StepCard
                   step={3}
                   icon={Banknote}
-                  title="Get Paid"
-                  description="Receive automatic weekly payouts directly to your bank account via Stripe."
+                  title={t("howItWorksPage.i3Title")}
+                  description={t("howItWorksPage.i3Desc")}
                   highlights={[
-                    "Transparent 10% platform fee",
-                    "Real-time earnings dashboard",
-                    "Automatic invoicing and tax reports",
+                    t("howItWorksPage.i3h1"),
+                    t("howItWorksPage.i3h2"),
+                    t("howItWorksPage.i3h3"),
                   ]}
                 />
               </FadeIn>
@@ -274,11 +269,10 @@ export function HowItWorksPage() {
           <FadeIn>
             <div className="text-center">
               <h2 className="text-3xl font-bold">
-                Why Outdoor Fitness in Italy?
+                {t("howItWorksPage.benefitsTitle")}
               </h2>
               <p className="mx-auto mt-2 max-w-lg text-muted-foreground">
-                There&apos;s nothing quite like working out under the Italian
-                sky. Here&apos;s what makes SmileFit special.
+                {t("howItWorksPage.benefitsSubtitle")}
               </p>
             </div>
           </FadeIn>
@@ -287,29 +281,29 @@ export function HowItWorksPage() {
             <FadeIn>
               <BenefitCard
                 icon={MapPin}
-                title="Stunning Locations"
-                description="From ancient Roman parks to Sicilian beaches — every class takes place in a beautiful outdoor setting you won't find in any gym."
+                title={t("howItWorksPage.b1Title")}
+                description={t("howItWorksPage.b1Desc")}
               />
             </FadeIn>
             <FadeIn>
               <BenefitCard
                 icon={Wind}
-                title="Fresh Air & Vitamin D"
-                description="Studies show outdoor exercise boosts mood, reduces stress, and improves focus. Swap fluorescent lights for Italian sunshine."
+                title={t("howItWorksPage.b2Title")}
+                description={t("howItWorksPage.b2Desc")}
               />
             </FadeIn>
             <FadeIn>
               <BenefitCard
                 icon={Users}
-                title="Real Community"
-                description="Meet like-minded people in your city. SmileFit classes are social by nature — you'll make friends while getting fit."
+                title={t("howItWorksPage.b3Title")}
+                description={t("howItWorksPage.b3Desc")}
               />
             </FadeIn>
             <FadeIn>
               <BenefitCard
                 icon={Award}
-                title="Expert Instructors"
-                description="Every instructor is vetted and certified. From yoga masters to HIIT coaches, find the perfect guide for your fitness journey."
+                title={t("howItWorksPage.b4Title")}
+                description={t("howItWorksPage.b4Desc")}
               />
             </FadeIn>
           </div>
@@ -322,11 +316,10 @@ export function HowItWorksPage() {
           <FadeIn>
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold sm:text-4xl">
-                Ready to Get Started?
+                {t("howItWorksPage.ctaTitle")}
               </h2>
               <p className="mt-3 text-lg text-muted-foreground">
-                Join thousands of people discovering the joy of outdoor fitness
-                across Italy. Your next great workout is just a click away.
+                {t("howItWorksPage.ctaSubtitle")}
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Button
@@ -335,12 +328,12 @@ export function HowItWorksPage() {
                   className="bg-[#2563EB] hover:bg-[#2563EB]/90 px-8"
                 >
                   <Link to="/classes">
-                    Browse Classes
+                    {t("common.browseClasses")}
                     <ArrowRight className="ml-2 size-4" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild className="px-8">
-                  <Link to="/become-instructor">Become an Instructor</Link>
+                  <Link to="/become-instructor">{t("common.becomeInstructor")}</Link>
                 </Button>
               </div>
             </div>
