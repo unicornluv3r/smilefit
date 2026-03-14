@@ -25,6 +25,7 @@ import { BookingSuccessPage } from "@/pages/BookingSuccessPage";
 import { BookingCancelledPage } from "@/pages/BookingCancelledPage";
 import { AuthCallbackPage } from "@/pages/AuthCallbackPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
+import { AboutPage } from "@/pages/AboutPage";
 import { DashboardLayout } from "@/pages/instructor/DashboardLayout";
 import { OverviewPage } from "@/pages/instructor/OverviewPage";
 import { ClassesManagePage } from "@/pages/instructor/ClassesManagePage";
@@ -59,6 +60,7 @@ export function App() {
               <Route path="how-it-works" element={<HowItWorksPage />} />
               <Route path="instructors" element={<InstructorsPage />} />
               <Route path="instructors/:id" element={<InstructorProfilePage />} />
+              <Route path="about" element={<AboutPage />} />
               <Route path="become-instructor" element={<BecomeInstructorPage />} />
               <Route path="booking/success" element={<BookingSuccessPage />} />
               <Route path="booking/cancelled" element={<BookingCancelledPage />} />

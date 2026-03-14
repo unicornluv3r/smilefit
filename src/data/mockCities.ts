@@ -36,7 +36,7 @@ export const MOCK_CITIES: City[] = [
     description:
       "Train among ancient ruins and lush parks in the Eternal City. From Villa Borghese to the Appian Way, Rome offers iconic backdrops for every workout.",
     heroImage:
-      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1600",
     coordinates: { latitude: 41.9028, longitude: 12.4964 },
     latitude: 41.9028,
     longitude: 12.4964,
@@ -81,7 +81,7 @@ export const MOCK_CITIES: City[] = [
     description:
       "Discover outdoor fitness in the cradle of the Renaissance. Florence's parks and riverbanks provide stunning settings for classes year-round.",
     heroImage:
-      "https://images.unsplash.com/photo-1543429258-0b173e04e693?w=1200&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1541370976299-4d24ebbc9077?w=1600",
     coordinates: { latitude: 43.7696, longitude: 11.2558 },
     latitude: 43.7696,
     longitude: 11.2558,
@@ -126,7 +126,7 @@ export const MOCK_CITIES: City[] = [
     description:
       "Stay fit in Italy's fashion and business capital. Milan's sprawling parks and modern waterfront areas offer diverse outdoor training spots.",
     heroImage:
-      "https://images.unsplash.com/photo-1520440229-6469a149ac59?w=1200&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1513581166391-887a96ddeafd?w=1600",
     coordinates: { latitude: 45.4642, longitude: 9.19 },
     latitude: 45.4642,
     longitude: 9.19,
@@ -171,7 +171,7 @@ export const MOCK_CITIES: City[] = [
     description:
       "Get moving along the Bay of Naples with Vesuvius as your backdrop. Napoli's seaside promenades and hilltop parks make every workout epic.",
     heroImage:
-      "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=1200&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=1600",
     coordinates: { latitude: 40.8518, longitude: 14.2681 },
     latitude: 40.8518,
     longitude: 14.2681,
@@ -216,7 +216,7 @@ export const MOCK_CITIES: City[] = [
     description:
       "Experience fitness on the lagoon. Venice and its Lido beach offer unique waterside training environments unlike anywhere else.",
     heroImage:
-      "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1200&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1600",
     coordinates: { latitude: 45.4408, longitude: 12.3155 },
     latitude: 45.4408,
     longitude: 12.3155,
@@ -261,7 +261,7 @@ export const MOCK_CITIES: City[] = [
     description:
       "Train in Italy's foodie capital. Bologna's portico-lined streets, hilltop sanctuaries, and lush gardens are ideal for outdoor fitness.",
     heroImage:
-      "https://images.unsplash.com/photo-1598950473673-c04e48cfc064?w=1200&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1567005429289-2b28c2759960?w=1600",
     coordinates: { latitude: 44.4949, longitude: 11.3426 },
     latitude: 44.4949,
     longitude: 11.3426,
@@ -300,7 +300,7 @@ export const MOCK_CITIES: City[] = [
     description:
       "Work out with the Alps as your backdrop. Torino's riverside parks and mountain-view training spots offer an unbeatable fitness experience.",
     heroImage:
-      "https://images.unsplash.com/photo-1614094082869-cd4e4b2f44da?w=1200&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1564594736624-def7a10ab047?w=1600",
     coordinates: { latitude: 45.0703, longitude: 7.6869 },
     latitude: 45.0703,
     longitude: 7.6869,
@@ -345,7 +345,7 @@ export const MOCK_CITIES: City[] = [
     description:
       "Train on golden beaches and in Mediterranean gardens. Palermo's warm climate and coastal setting make it a year-round outdoor gym.",
     heroImage:
-      "https://images.unsplash.com/photo-1523365280197-f1783db9fe62?w=1200&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1523365280197-f1783db9fe62?w=1600",
     coordinates: { latitude: 38.1157, longitude: 13.3615 },
     latitude: 38.1157,
     longitude: 13.3615,
