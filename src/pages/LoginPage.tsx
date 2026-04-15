@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
+import { getAuthErrorMessage } from "@/lib/authError";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { PasswordInput } from "@/components/auth/PasswordInput";
 import { SocialLoginButton } from "@/components/auth/SocialLoginButton";
@@ -25,6 +27,7 @@ type LoginValues = z.infer<typeof loginSchema>;
 
 export function LoginPage() {
   const { user, loading: authLoading, signIn } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [error, setError] = useState<string | null>(null);
@@ -53,21 +56,21 @@ export function LoginPage() {
     setError(null);
     try {
       await signIn(data.email, data.password);
-      toast.success("Welcome back!");
+      toast.success(t("auth.welcomeBack"));
       navigate(returnUrl);
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : "Something went wrong";
-      if (message === "Invalid login credentials") {
-        setError("Incorrect email or password. Please try again.");
+      console.error("[SmileFit Auth] signIn failed:", err);
+      const rawMessage = err instanceof Error ? err.message : "";
+      if (rawMessage === "Invalid login credentials") {
+        setError(t("auth.loginError"));
       } else {
-        setError(message);
+        setError(getAuthErrorMessage(err));
       }
     }
   };
 
   return (
-    <AuthLayout title="Welcome back" description="Log in to your SmileFit account">
+    <AuthLayout title={t("auth.loginTitle")} description={t("auth.loginSubtitle")}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {error && (
           <Alert variant="destructive">
@@ -76,14 +79,14 @@ export function LoginPage() {
         )}
 
         <div className="space-y-1.5">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="you@example.com" {...register("email")} aria-invalid={!!errors.email} />
+          <Label htmlFor="email">{t("auth.email")}</Label>
+          <Input id="email" type="email" placeholder={t("auth.emailPlaceholder")} {...register("email")} aria-invalid={!!errors.email} />
           {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="password">Password</Label>
-          <PasswordInput id="password" placeholder="Enter your password" {...register("password")} aria-invalid={!!errors.password} />
+          <Label htmlFor="password">{t("auth.password")}</Label>
+          <PasswordInput id="password" placeholder={t("auth.passwordPlaceholder")} {...register("password")} aria-invalid={!!errors.password} />
           {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
         </div>
 
@@ -99,13 +102,13 @@ export function LoginPage() {
                   onCheckedChange={(checked) => field.onChange(checked === true)}
                 />
                 <Label htmlFor="rememberMe" className="text-sm font-normal">
-                  Remember me
+                  {t("auth.rememberMe")}
                 </Label>
               </div>
             )}
           />
           <Link to="/forgot-password" className="text-sm text-[#2563EB] hover:underline">
-            Forgot password?
+            {t("auth.forgotPassword")}
           </Link>
         </div>
 
@@ -115,7 +118,7 @@ export function LoginPage() {
           className="w-full bg-[#2563EB] hover:bg-[#2563EB]/90"
         >
           {isSubmitting && <Loader2 className="mr-2 size-4 animate-spin" />}
-          Log In
+          {t("auth.logIn")}
         </Button>
       </form>
 
@@ -124,16 +127,16 @@ export function LoginPage() {
           <div className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-muted-foreground dark:bg-card">or</span>
+          <span className="bg-white px-2 text-muted-foreground dark:bg-card">{t("auth.or")}</span>
         </div>
       </div>
 
       <SocialLoginButton />
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
-        Don&apos;t have an account?{" "}
+        {t("auth.noAccount")}{" "}
         <Link to="/signup" className="font-medium text-[#2563EB] hover:underline">
-          Sign up
+          {t("auth.signUpLink")}
         </Link>
       </p>
     </AuthLayout>

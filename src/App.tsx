@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/context/AuthContext";
+import { useSupabaseHealthCheck } from "@/hooks/useSupabaseHealthCheck";
 import { BookingProvider } from "@/context/BookingContext";
 import { Layout } from "@/components/Layout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -45,6 +46,7 @@ const queryClient = new QueryClient({
 });
 
 export function App() {
+  useSupabaseHealthCheck();
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>

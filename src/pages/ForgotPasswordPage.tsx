@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, MailCheck, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { getAuthErrorMessage } from "@/lib/authError";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,6 +21,7 @@ type ForgotValues = z.infer<typeof schema>;
 
 export function ForgotPasswordPage() {
   const { resetPassword } = useAuth();
+  const { t } = useTranslation();
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,26 +40,24 @@ export function ForgotPasswordPage() {
       await resetPassword(data.email);
       setSuccess(true);
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : "Something went wrong";
-      setError(message);
+      console.error("[SmileFit Auth] resetPassword failed:", err);
+      setError(getAuthErrorMessage(err));
     }
   };
 
   if (success) {
     return (
       <AuthLayout
-        title="Check your email"
-        description="We've sent you a password reset link"
+        title={t("auth.resetSentTitle")}
+        description={t("auth.resetSentSubtitle")}
       >
         <div className="flex flex-col items-center gap-4 py-4">
           <MailCheck className="size-12 text-[#2563EB]" />
           <p className="text-center text-sm text-muted-foreground">
-            If an account exists with that email, you'll receive a link to reset
-            your password. Check your spam folder if you don't see it.
+            {t("auth.resetSentDesc")}
           </p>
           <Button asChild className="mt-2 bg-[#2563EB] hover:bg-[#2563EB]/90">
-            <Link to="/login">Back to Log In</Link>
+            <Link to="/login">{t("auth.backToLogin")}</Link>
           </Button>
         </div>
       </AuthLayout>
@@ -65,8 +66,8 @@ export function ForgotPasswordPage() {
 
   return (
     <AuthLayout
-      title="Forgot your password?"
-      description="Enter your email and we'll send you a reset link"
+      title={t("auth.forgotTitle")}
+      description={t("auth.forgotSubtitle")}
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {error && (
@@ -76,11 +77,11 @@ export function ForgotPasswordPage() {
         )}
 
         <div className="space-y-1.5">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t("auth.email")}</Label>
           <Input
             id="email"
             type="email"
-            placeholder="you@example.com"
+            placeholder={t("auth.emailPlaceholder")}
             {...register("email")}
             aria-invalid={!!errors.email}
           />
@@ -95,7 +96,7 @@ export function ForgotPasswordPage() {
           className="w-full bg-[#2563EB] hover:bg-[#2563EB]/90"
         >
           {isSubmitting && <Loader2 className="mr-2 size-4 animate-spin" />}
-          Send Reset Link
+          {t("auth.sendResetLink")}
         </Button>
       </form>
 
@@ -105,7 +106,7 @@ export function ForgotPasswordPage() {
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="size-3.5" />
-          Back to Log In
+          {t("auth.backToLogin")}
         </Link>
       </div>
     </AuthLayout>

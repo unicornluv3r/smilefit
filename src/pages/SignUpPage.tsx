@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MailCheck, Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { getAuthErrorMessage } from "@/lib/authError";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { PasswordInput } from "@/components/auth/PasswordInput";
 import { PasswordStrength } from "@/components/auth/PasswordStrength";
@@ -39,6 +41,7 @@ type SignUpValues = z.infer<typeof signUpSchema>;
 
 export function SignUpPage() {
   const { user, loading: authLoading, signUp } = useAuth();
+  const { t } = useTranslation();
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -74,22 +77,21 @@ export function SignUpPage() {
       await signUp(data.email, data.password, data.fullName);
       setSuccess(true);
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : "Something went wrong";
-      setError(message);
+      console.error("[SmileFit Auth] signUp failed:", err);
+      setError(getAuthErrorMessage(err));
     }
   };
 
   if (success) {
     return (
-      <AuthLayout title="Check your email" description="We've sent you a confirmation link">
+      <AuthLayout title={t("auth.checkEmail")} description={t("auth.confirmationSent")}>
         <div className="flex flex-col items-center gap-4 py-4">
           <MailCheck className="size-12 text-[#2563EB]" />
           <p className="text-center text-sm text-muted-foreground">
-            Click the link in your email to activate your account, then come back to log in.
+            {t("auth.checkEmailDesc")}
           </p>
           <Button asChild className="mt-2 bg-[#2563EB] hover:bg-[#2563EB]/90">
-            <Link to="/login">Go to Log In</Link>
+            <Link to="/login">{t("auth.goToLogin")}</Link>
           </Button>
         </div>
       </AuthLayout>
@@ -97,7 +99,7 @@ export function SignUpPage() {
   }
 
   return (
-    <AuthLayout title="Create your account" description="Join SmileFit and start your fitness journey">
+    <AuthLayout title={t("auth.signupTitle")} description={t("auth.signupSubtitle")}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {error && (
           <Alert variant="destructive">
@@ -106,32 +108,32 @@ export function SignUpPage() {
         )}
 
         <div className="space-y-1.5">
-          <Label htmlFor="fullName">Full Name</Label>
-          <Input id="fullName" placeholder="John Doe" {...register("fullName")} aria-invalid={!!errors.fullName} />
+          <Label htmlFor="fullName">{t("auth.fullName")}</Label>
+          <Input id="fullName" placeholder={t("auth.fullNamePlaceholder")} {...register("fullName")} aria-invalid={!!errors.fullName} />
           {errors.fullName && <p className="text-xs text-destructive">{errors.fullName.message}</p>}
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="you@example.com" {...register("email")} aria-invalid={!!errors.email} />
+          <Label htmlFor="email">{t("auth.email")}</Label>
+          <Input id="email" type="email" placeholder={t("auth.emailPlaceholder")} {...register("email")} aria-invalid={!!errors.email} />
           {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="password">Password</Label>
-          <PasswordInput id="password" placeholder="Create a password" {...register("password")} aria-invalid={!!errors.password} />
+          <Label htmlFor="password">{t("auth.createPassword")}</Label>
+          <PasswordInput id="password" placeholder={t("auth.passwordPlaceholder")} {...register("password")} aria-invalid={!!errors.password} />
           <PasswordStrength password={password} />
           {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="confirmPassword">Confirm Password</Label>
-          <PasswordInput id="confirmPassword" placeholder="Repeat your password" {...register("confirmPassword")} aria-invalid={!!errors.confirmPassword} />
+          <Label htmlFor="confirmPassword">{t("auth.confirmPassword")}</Label>
+          <PasswordInput id="confirmPassword" placeholder={t("auth.confirmPasswordPlaceholder")} {...register("confirmPassword")} aria-invalid={!!errors.confirmPassword} />
           {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword.message}</p>}
         </div>
 
         <div className="space-y-1.5">
-          <Label>I want to</Label>
+          <Label>{t("auth.iWantTo")}</Label>
           <div className="grid grid-cols-2 gap-2">
             <Button
               type="button"
@@ -139,7 +141,7 @@ export function SignUpPage() {
               className={role === "student" ? "bg-[#2563EB] hover:bg-[#2563EB]/90" : ""}
               onClick={() => setValue("role", "student", { shouldValidate: true })}
             >
-              Take Classes
+              {t("auth.takeClasses")}
             </Button>
             <Button
               type="button"
@@ -147,7 +149,7 @@ export function SignUpPage() {
               className={role === "instructor" ? "bg-[#2563EB] hover:bg-[#2563EB]/90" : ""}
               onClick={() => setValue("role", "instructor", { shouldValidate: true })}
             >
-              Teach Classes
+              {t("auth.teachClasses")}
             </Button>
           </div>
         </div>
@@ -164,13 +166,13 @@ export function SignUpPage() {
                   onCheckedChange={(checked) => field.onChange(checked === true ? true : undefined)}
                 />
                 <Label htmlFor="agreeToTerms" className="text-sm font-normal leading-snug">
-                  I agree to the{" "}
+                  {t("auth.agreeTerms")}{" "}
                   <Link to="#" className="text-[#2563EB] underline">
-                    Terms of Service
+                    {t("auth.termsOfService")}
                   </Link>{" "}
-                  and{" "}
+                  {t("auth.and")}{" "}
                   <Link to="#" className="text-[#2563EB] underline">
-                    Privacy Policy
+                    {t("auth.privacyPolicy")}
                   </Link>
                 </Label>
               </div>
@@ -187,7 +189,7 @@ export function SignUpPage() {
           className="w-full bg-[#2563EB] hover:bg-[#2563EB]/90"
         >
           {isSubmitting && <Loader2 className="mr-2 size-4 animate-spin" />}
-          Create Account
+          {t("auth.createAccount")}
         </Button>
       </form>
 
@@ -196,16 +198,16 @@ export function SignUpPage() {
           <div className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-muted-foreground dark:bg-card">or</span>
+          <span className="bg-white px-2 text-muted-foreground dark:bg-card">{t("auth.or")}</span>
         </div>
       </div>
 
       <SocialLoginButton />
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
+        {t("auth.hasAccount")}{" "}
         <Link to="/login" className="font-medium text-[#2563EB] hover:underline">
-          Log in
+          {t("auth.logInLink")}
         </Link>
       </p>
     </AuthLayout>
