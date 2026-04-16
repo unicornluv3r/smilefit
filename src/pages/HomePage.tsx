@@ -81,7 +81,7 @@ function HeroSection() {
             <Button
               size="lg"
               asChild
-              className="btn-shimmer bg-white text-gray-900 hover:bg-white/90 transition-all duration-200 hover:shadow-lg"
+              className="btn-shimmer bg-white text-gray-900 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200 hover:shadow-lg"
             >
               <Link to="/classes">
                 {t("hero.browseClasses")} <ArrowRight className="ml-1 size-4" />
@@ -90,7 +90,7 @@ function HeroSection() {
             <Button
               size="lg"
               asChild
-              className="border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 transition-all duration-200"
+              className="border border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 hover:text-white transition-all duration-200"
             >
               <Link to="/become-instructor">{t("hero.becomeInstructor")}</Link>
             </Button>
@@ -273,7 +273,7 @@ function BecomeInstructorCTA() {
           <Button
             size="lg"
             asChild
-            className="btn-shimmer bg-white text-[#2563EB] hover:bg-white/90 px-8 font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-black/20"
+            className="btn-shimmer bg-white text-[#2563EB] hover:bg-gray-100 hover:text-[#2563EB] px-8 font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-black/20"
           >
             <Link to="/become-instructor">
               {t("instructorCta.getStarted")}
