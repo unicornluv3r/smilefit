@@ -396,6 +396,15 @@ const zh = {
       noBio: "\u6682\u65e0\u7b80\u4ecb\u3002\u70b9\u51fb\u201c\u7f16\u8f91\u8d44\u6599\u201d\u6dfb\u52a0\u3002",
       noFavorites: "\u6682\u65e0\u6536\u85cf\u3002\u70b9\u51fb\u201c\u7f16\u8f91\u8d44\u6599\u201d\u9009\u62e9\u3002",
       memberSince: "注册于 {{date}}",
+      certifications: {
+        sectionTitle: "认证",
+        helpText: "添加您的资质 — 将显示在您的公开教练资料中",
+        placeholder: "例如 RYT-200、Pilates Method Alliance",
+        addButton: "添加",
+        emptyState: "尚未添加认证",
+        successToast: "认证已更新！",
+        errorToast: "无法更新认证，请重试。",
+      },
     },
 
     // ── My Bookings ─────────────────────────────────────────
@@ -478,9 +487,12 @@ const zh = {
       readMore: "阅读更多",
       specialties: "专长",
       certifications: "认证",
+      classesBy: "{{name}}的课程",
       classesByInstructor: "{{name}}的课程",
       classCount: "{{count}} 节课程",
       classCount_other: "{{count}} 节课程",
+      reviewCount_one: "1 条评价",
+      reviewCount_other: "{{count}} 条评价",
       noClasses: "暂无课程。",
       reviewsTitle: "评价",
       noReviews: "暂无评价。",

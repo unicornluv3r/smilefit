@@ -18,6 +18,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
+import { CertificationsEditor } from "@/components/profile/CertificationsEditor";
+import { BadgeCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -271,6 +273,16 @@ export function ProfilePage() {
             />
           </Card>
 
+          {user && (
+            <CertificationsEditor
+              userId={user.id}
+              value={profile?.certifications ?? []}
+              onChange={() => {
+                /* saved inline; form submit covers other fields */
+              }}
+            />
+          )}
+
           <div className="flex gap-3">
             <Button
               type="submit"
@@ -316,6 +328,25 @@ export function ProfilePage() {
               </p>
             )}
           </Card>
+
+          {profile?.certifications && profile.certifications.length > 0 && (
+            <Card className="p-5">
+              <h3 className="mb-3 font-semibold">
+                {t("profile.certifications.sectionTitle")}
+              </h3>
+              <ul className="space-y-2">
+                {profile.certifications.map((cert) => (
+                  <li
+                    key={cert}
+                    className="flex items-start gap-2 text-sm"
+                  >
+                    <BadgeCheck className="mt-0.5 size-4 shrink-0 text-[#2563EB]" />
+                    <span>{cert}</span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
         </div>
       )}
     </div>

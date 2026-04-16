@@ -311,7 +311,9 @@ export function InstructorProfilePage() {
             {/* Classes */}
             <section>
               <h2 className="mb-4 text-lg font-semibold">
-                {t("instructorProfile.classesBy", { name: instructor.name.split(" ")[0] })}{" "}
+                {t("instructorProfile.classesByInstructor", {
+                  name: instructor.name.split(" ")[0],
+                })}{" "}
                 <span className="text-sm font-normal text-muted-foreground">
                   ({t("instructorProfile.classCount", { count: instructor.classes.length })})
                 </span>

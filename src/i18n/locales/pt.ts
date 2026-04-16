@@ -396,6 +396,15 @@ const pt = {
       noBio: "Sem bio ainda. Clique em Editar Perfil para adicionar uma.",
       noFavorites: "Sem favoritos ainda. Clique em Editar Perfil para escolher alguns.",
       memberSince: "Membro desde {{date}}",
+      certifications: {
+        sectionTitle: "Certificações",
+        helpText: "Adicione as suas qualificações — aparecerão no seu perfil público de instrutor",
+        placeholder: "ex. RYT-200, Pilates Method Alliance",
+        addButton: "Adicionar",
+        emptyState: "Ainda não foram adicionadas certificações",
+        successToast: "Certificações atualizadas!",
+        errorToast: "Não foi possível atualizar as certificações. Tente novamente.",
+      },
     },
 
     // ── My Bookings ─────────────────────────────────────────
@@ -478,9 +487,12 @@ const pt = {
       readMore: "Ler mais",
       specialties: "Especialidades",
       certifications: "Certificações",
+      classesBy: "Aulas de {{name}}",
       classesByInstructor: "Aulas de {{name}}",
       classCount: "{{count}} aula",
       classCount_other: "{{count}} aulas",
+      reviewCount_one: "1 avaliação",
+      reviewCount_other: "{{count}} avaliações",
       noClasses: "Nenhuma aula listada ainda.",
       reviewsTitle: "Avaliações",
       noReviews: "Nenhuma avaliação ainda.",

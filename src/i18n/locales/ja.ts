@@ -396,6 +396,15 @@ const ja = {
       noBio: "自己紹介はまだありません。「プロフィールを編集」から追加できます。",
       noFavorites: "お気に入りはまだありません。「プロフィールを編集」から選択できます。",
       memberSince: "{{date}}から会員",
+      certifications: {
+        sectionTitle: "認定資格",
+        helpText: "資格を追加しましょう — 公開インストラクタープロフィールに表示されます",
+        placeholder: "例: RYT-200、Pilates Method Alliance",
+        addButton: "追加",
+        emptyState: "まだ認定資格が追加されていません",
+        successToast: "認定資格を更新しました！",
+        errorToast: "認定資格を更新できませんでした。もう一度お試しください。",
+      },
     },
 
     // ── My Bookings ─────────────────────────────────────────
@@ -478,9 +487,12 @@ const ja = {
       readMore: "もっと読む",
       specialties: "専門分野",
       certifications: "資格",
+      classesBy: "{{name}}のクラス",
       classesByInstructor: "{{name}}のクラス",
       classCount: "{{count}}件のクラス",
       classCount_other: "{{count}}件のクラス",
+      reviewCount_one: "1件のレビュー",
+      reviewCount_other: "{{count}}件のレビュー",
       noClasses: "まだクラスが登録されていません。",
       reviewsTitle: "レビュー",
       noReviews: "まだレビューはありません。",
