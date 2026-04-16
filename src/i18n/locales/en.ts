@@ -395,7 +395,7 @@ const en = {
       about: "About",
       noBio: "No bio yet. Click Edit Profile to add one.",
       noFavorites: "No favorites yet. Click Edit Profile to pick some.",
-      memberSince: "Member since {{month}} {{year}}",
+      memberSince: "Member since {{date}}",
     },
 
     // ── My Bookings ─────────────────────────────────────────

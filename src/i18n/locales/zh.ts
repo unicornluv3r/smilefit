@@ -395,7 +395,7 @@ const zh = {
       about: "关于",
       noBio: "\u6682\u65e0\u7b80\u4ecb\u3002\u70b9\u51fb\u201c\u7f16\u8f91\u8d44\u6599\u201d\u6dfb\u52a0\u3002",
       noFavorites: "\u6682\u65e0\u6536\u85cf\u3002\u70b9\u51fb\u201c\u7f16\u8f91\u8d44\u6599\u201d\u9009\u62e9\u3002",
-      memberSince: "注册于 {{month}} {{year}}",
+      memberSince: "注册于 {{date}}",
     },
 
     // ── My Bookings ─────────────────────────────────────────

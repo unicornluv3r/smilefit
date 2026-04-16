@@ -395,7 +395,7 @@ const de = {
       about: "Über mich",
       noBio: "Noch keine Bio. Klicke auf \u201EProfil bearbeiten\u201C, um eine hinzuzuf\u00fcgen.",
       noFavorites: "Noch keine Favoriten. Klicke auf \u201EProfil bearbeiten\u201C, um welche auszuw\u00e4hlen.",
-      memberSince: "Mitglied seit {{month}} {{year}}",
+      memberSince: "Mitglied seit {{date}}",
     },
 
     // ── My Bookings ─────────────────────────────────────────

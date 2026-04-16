@@ -80,7 +80,7 @@ function ProfileSkeleton() {
 }
 
 export function ProfilePage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, profile, loading, updateProfile } = useAuth();
   const [editing, setEditing] = useState(false);
   const [optimisticAvatarUrl, setOptimisticAvatarUrl] = useState<string | null>(
@@ -109,10 +109,10 @@ export function ProfilePage() {
   const displayName =
     profile?.display_name ?? profile?.full_name ?? user?.email ?? "User";
   const memberSince = profile?.created_at
-    ? new Date(profile.created_at).toLocaleDateString("en-GB", {
+    ? new Intl.DateTimeFormat(i18n.language, {
         month: "long",
         year: "numeric",
-      })
+      }).format(new Date(profile.created_at))
     : null;
 
   const onSubmit = async (data: ProfileFormValues) => {
@@ -165,7 +165,7 @@ export function ProfilePage() {
             {memberSince && (
               <span className="flex items-center gap-1">
                 <CalendarDays className="size-3" />
-                {t("profile.memberSince")} {memberSince}
+                {t("profile.memberSince", { date: memberSince })}
               </span>
             )}
           </div>

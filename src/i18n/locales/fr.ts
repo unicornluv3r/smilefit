@@ -395,7 +395,7 @@ const fr = {
       about: "À propos",
       noBio: "Pas encore de bio. Cliquez sur Modifier le profil pour en ajouter une.",
       noFavorites: "Pas encore de favoris. Cliquez sur Modifier le profil pour en choisir.",
-      memberSince: "Membre depuis {{month}} {{year}}",
+      memberSince: "Membre depuis {{date}}",
     },
 
     // ── My Bookings ─────────────────────────────────────────

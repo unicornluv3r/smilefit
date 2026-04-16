@@ -395,7 +395,7 @@ const es = {
       about: "Sobre Mí",
       noBio: "Sin biografía aún. Haz clic en Editar Perfil para añadir una.",
       noFavorites: "Sin favoritos aún. Haz clic en Editar Perfil para elegir algunos.",
-      memberSince: "Miembro desde {{month}} {{year}}",
+      memberSince: "Miembro desde {{date}}",
     },
 
     // ── My Bookings ─────────────────────────────────────────

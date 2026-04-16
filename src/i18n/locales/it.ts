@@ -343,7 +343,7 @@ const it = {
       about: "Informazioni",
       noBio: "Nessuna bio ancora. Clicca Modifica Profilo per aggiungerne una.",
       noFavorites: "Nessun preferito ancora. Clicca Modifica Profilo per sceglierne alcuni.",
-      memberSince: "Membro dal {{month}} {{year}}",
+      memberSince: "Membro dal {{date}}",
     },
     myBookings: {
       title: "Le Mie Prenotazioni",
