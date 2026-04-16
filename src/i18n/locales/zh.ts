@@ -112,7 +112,7 @@ const zh = {
       s3Title: "到场并微笑",
       s3Desc: "到达户外地点，与教练见面，享受课程。",
       s3h1: "GPS导航至确切集合地点",
-      s3h2: "所有器材由教练提供",
+      s3h2: "\u6BCF\u8282\u8BFE\u7A0B\u9875\u9762\u5747\u5217\u6709\u9700\u8981\u643A\u5E26\u7684\u7269\u54C1",
       s3h3: "留下评价帮助社区成长",
       forInstructors: "教练专区",
       instructorTitle: "发展您的健身事业",
@@ -366,7 +366,21 @@ const zh = {
     profile: {
       title: "我的个人资料",
       editProfile: "编辑资料",
-      photoSoon: "照片上传功能即将上线",
+      avatar: {
+        upload: "上传照片",
+        change: "更换照片",
+        remove: "移除照片",
+        cropTitle: "裁剪您的照片",
+        cropSubtitle: "调整并缩放以便取景您的面部",
+        zoom: "缩放",
+        save: "保存照片",
+        cancel: "取消",
+        uploading: "上传中...",
+        errorTooLarge: "照片必须小于 2 MB",
+        errorInvalidType: "请上传 JPEG、PNG 或 WebP 图像",
+        errorUploadFailed: "上传失败，请重试。",
+        successToast: "个人照片已更新！",
+      },
       cancel: "取消",
       basicInfo: "基本信息",
       displayName: "显示名称",
@@ -544,6 +558,61 @@ const zh = {
       profileUpdated: "资料已更新",
       failedUpdateProfile: "更新资料失败",
       allCities: "所有城市",
+      viewDetails: "查看详情",
+      viewProfile: "查看个人资料",
+      viewClass: "查看课程",
+      popular: "热门",
+      today: "今天！",
+      with: "与 {{name}}",
+      cancelledOn: "于 {{date}} 取消",
+      findClasses: "查找课程",
+    },
+
+    // ── Password ────────────────────────────────────────────
+    password: {
+      show: "显示密码",
+      hide: "隐藏密码",
+      weak: "弱",
+      fair: "中等",
+      strong: "强",
+    },
+
+    // ── Social Login ────────────────────────────────────────
+    socialLogin: {
+      continueWithGoogle: "使用 Google 继续",
+    },
+
+    // ── Instructor Sidebar ──────────────────────────────────
+    instructorSidebar: {
+      responseRate: "回复率：",
+      responds: "回复",
+      joined: "加入时间",
+      message: "给 {{name}} 发消息",
+      usuallyResponds: "通常 {{time}} 回复",
+    },
+
+    // ── Class Detail Instructor ─────────────────────────────
+    classDetailInstructor: {
+      classesTaught: "已授 {{count}} 节课",
+    },
+
+    // ── City Card ───────────────────────────────────────────
+    cityCard: {
+      classCount: "{{count}} 节课程",
+    },
+
+    // ── Booking Card ────────────────────────────────────────
+    bookingCard: {
+      cancelTitle: "取消此预订？",
+      cancelDescText: "您确定要取消 {{name}} 的预订吗？此操作无法撤消。",
+      keepBooking: "保留预订",
+      yesCancel: "是的，取消",
+      cancelBooking: "取消预订",
+      leaveReview: "留下评价",
+      bookAgain: "再次预订",
+      confirmed: "已确认",
+      completed: "已完成",
+      cancelled: "已取消",
     },
   },
 };

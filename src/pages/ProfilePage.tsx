@@ -1,24 +1,23 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Loader2,
-  Camera,
   MapPin,
   CalendarDays,
   Pencil,
   X,
 } from "lucide-react";
-import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
+import { AvatarUpload } from "@/components/profile/AvatarUpload";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -81,8 +80,12 @@ function ProfileSkeleton() {
 }
 
 export function ProfilePage() {
+  const { t } = useTranslation();
   const { user, profile, loading, updateProfile } = useAuth();
   const [editing, setEditing] = useState(false);
+  const [optimisticAvatarUrl, setOptimisticAvatarUrl] = useState<string | null>(
+    null,
+  );
 
   const {
     register,
@@ -130,37 +133,25 @@ export function ProfilePage() {
   return (
     <div className="container mx-auto max-w-2xl px-4 py-8">
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">My Profile</h1>
+        <h1 className="text-2xl font-bold">{t("profile.title")}</h1>
         {!editing && (
           <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
             <Pencil className="mr-1.5 size-3.5" />
-            Edit Profile
+            {t("profile.editProfile")}
           </Button>
         )}
       </div>
 
       {/* Avatar + Name header */}
       <div className="flex items-center gap-4">
-        <div className="relative">
-          <Avatar className="size-20">
-            {profile?.avatar_url && (
-              <AvatarImage src={profile.avatar_url} alt={displayName} />
-            )}
-            <AvatarFallback className="bg-[#2563EB] text-lg text-white">
-              {getInitials(displayName)}
-            </AvatarFallback>
-          </Avatar>
-          {editing && (
-            <button
-              type="button"
-              onClick={() => toast.info("Photo upload coming soon")}
-              className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full border-2 border-background bg-muted hover:bg-muted/80"
-              aria-label="Upload photo"
-            >
-              <Camera className="size-3.5" />
-            </button>
-          )}
-        </div>
+        {user ? (
+          <AvatarUpload
+            currentAvatarUrl={optimisticAvatarUrl ?? profile?.avatar_url ?? null}
+            userId={user.id}
+            userInitials={getInitials(displayName)}
+            onUploadComplete={(url) => setOptimisticAvatarUrl(url)}
+          />
+        ) : null}
         <div>
           <h2 className="text-xl font-semibold">{displayName}</h2>
           <p className="text-sm text-muted-foreground">{user?.email}</p>
@@ -174,7 +165,7 @@ export function ProfilePage() {
             {memberSince && (
               <span className="flex items-center gap-1">
                 <CalendarDays className="size-3" />
-                Member since {memberSince}
+                {t("profile.memberSince")} {memberSince}
               </span>
             )}
           </div>
@@ -186,10 +177,10 @@ export function ProfilePage() {
       {editing ? (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <Card className="p-5">
-            <h3 className="mb-4 font-semibold">Basic Information</h3>
+            <h3 className="mb-4 font-semibold">{t("profile.basicInfo")}</h3>
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="display_name">Display Name</Label>
+                <Label htmlFor="display_name">{t("profile.displayName")}</Label>
                 <Input
                   id="display_name"
                   {...register("display_name")}
@@ -203,10 +194,10 @@ export function ProfilePage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="bio">Bio</Label>
+                <Label htmlFor="bio">{t("profile.bio")}</Label>
                 <Textarea
                   id="bio"
-                  placeholder="Tell us a bit about yourself..."
+                  placeholder={t("profile.bioPlaceholder")}
                   rows={3}
                   {...register("bio")}
                   aria-invalid={!!errors.bio}
@@ -219,7 +210,7 @@ export function ProfilePage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="city">City</Label>
+                <Label htmlFor="city">{t("profile.city")}</Label>
                 <Controller
                   control={control}
                   name="city"
@@ -229,7 +220,7 @@ export function ProfilePage() {
                       onValueChange={field.onChange}
                     >
                       <SelectTrigger id="city">
-                        <SelectValue placeholder="Select your city" />
+                        <SelectValue placeholder={t("profile.selectCity")} />
                       </SelectTrigger>
                       <SelectContent>
                         {MOCK_CITIES.map((city) => (
@@ -246,7 +237,7 @@ export function ProfilePage() {
           </Card>
 
           <Card className="p-5">
-            <h3 className="mb-4 font-semibold">Favorite Categories</h3>
+            <h3 className="mb-4 font-semibold">{t("profile.favoriteCategories")}</h3>
             <Controller
               control={control}
               name="favorite_categories"
@@ -289,11 +280,11 @@ export function ProfilePage() {
               {isSubmitting && (
                 <Loader2 className="mr-2 size-4 animate-spin" />
               )}
-              Save Changes
+              {t("profile.saveChanges")}
             </Button>
             <Button type="button" variant="outline" onClick={handleCancel}>
               <X className="mr-1.5 size-3.5" />
-              Cancel
+              {t("profile.cancel")}
             </Button>
           </div>
         </form>
@@ -301,15 +292,15 @@ export function ProfilePage() {
         <div className="space-y-6">
           {/* Bio */}
           <Card className="p-5">
-            <h3 className="mb-2 font-semibold">About</h3>
+            <h3 className="mb-2 font-semibold">{t("profile.about")}</h3>
             <p className="text-sm text-muted-foreground">
-              {profile?.bio || "No bio yet. Click Edit Profile to add one."}
+              {profile?.bio || t("profile.noBio")}
             </p>
           </Card>
 
           {/* Favorite Categories */}
           <Card className="p-5">
-            <h3 className="mb-3 font-semibold">Favorite Categories</h3>
+            <h3 className="mb-3 font-semibold">{t("profile.favoriteCategories")}</h3>
             {profile?.favorite_categories &&
             profile.favorite_categories.length > 0 ? (
               <div className="flex flex-wrap gap-2">
@@ -321,7 +312,7 @@ export function ProfilePage() {
               </div>
             ) : (
               <p className="text-sm text-muted-foreground">
-                No favorites yet. Click Edit Profile to pick some.
+                {t("profile.noFavorites")}
               </p>
             )}
           </Card>

@@ -112,7 +112,7 @@ const ja = {
       s3Title: "参加して笑顔に",
       s3Desc: "屋外の会場に到着し、インストラクターに会い、クラスを楽しみましょう。",
       s3h1: "正確な集合場所へのGPS案内",
-      s3h2: "すべての器具はインストラクターが用意",
+      s3h2: "\u5404\u30AF\u30E9\u30B9\u30DA\u30FC\u30B8\u306B\u6301\u3061\u7269\u30EA\u30B9\u30C8\u3092\u8A18\u8F09",
       s3h3: "コミュニティのためにレビューを残そう",
       forInstructors: "インストラクターの方へ",
       instructorTitle: "フィットネスビジネスを成長させよう",
@@ -366,7 +366,21 @@ const ja = {
     profile: {
       title: "マイプロフィール",
       editProfile: "プロフィールを編集",
-      photoSoon: "写真アップロードは近日公開",
+      avatar: {
+        upload: "写真をアップロード",
+        change: "写真を変更",
+        remove: "写真を削除",
+        cropTitle: "写真をトリミング",
+        cropSubtitle: "ズームして顔に合わせてください",
+        zoom: "ズーム",
+        save: "写真を保存",
+        cancel: "キャンセル",
+        uploading: "アップロード中...",
+        errorTooLarge: "写真は2 MB未満にしてください",
+        errorInvalidType: "JPEG、PNG、またはWebP画像をアップロードしてください",
+        errorUploadFailed: "アップロードに失敗しました。もう一度お試しください。",
+        successToast: "プロフィール写真を更新しました！",
+      },
       cancel: "キャンセル",
       basicInfo: "基本情報",
       displayName: "表示名",
@@ -544,6 +558,61 @@ const ja = {
       profileUpdated: "プロフィールを更新しました",
       failedUpdateProfile: "プロフィールの更新に失敗しました",
       allCities: "すべての都市",
+      viewDetails: "詳細を見る",
+      viewProfile: "プロフィールを見る",
+      viewClass: "クラスを見る",
+      popular: "人気",
+      today: "今日！",
+      with: "{{name}} と",
+      cancelledOn: "{{date}} にキャンセル",
+      findClasses: "クラスを探す",
+    },
+
+    // ── Password ──────────────────────────────────────────
+    password: {
+      show: "パスワードを表示",
+      hide: "パスワードを非表示",
+      weak: "弱い",
+      fair: "普通",
+      strong: "強い",
+    },
+
+    // ── Social Login ──────────────────────────────────────
+    socialLogin: {
+      continueWithGoogle: "Google で続ける",
+    },
+
+    // ── Instructor Sidebar ────────────────────────────────
+    instructorSidebar: {
+      responseRate: "応答率：",
+      responds: "応答",
+      joined: "加入日",
+      message: "{{name}} にメッセージ",
+      usuallyResponds: "通常 {{time}} で応答",
+    },
+
+    // ── Class Detail Instructor ───────────────────────────
+    classDetailInstructor: {
+      classesTaught: "{{count}} クラス担当",
+    },
+
+    // ── City Card ─────────────────────────────────────────
+    cityCard: {
+      classCount: "{{count}} クラス",
+    },
+
+    // ── Booking Card ──────────────────────────────────────
+    bookingCard: {
+      cancelTitle: "この予約をキャンセルしますか？",
+      cancelDescText: "{{name}} の予約をキャンセルしてもよろしいですか？この操作は元に戻せません。",
+      keepBooking: "予約を保持",
+      yesCancel: "はい、キャンセル",
+      cancelBooking: "予約をキャンセル",
+      leaveReview: "レビューを書く",
+      bookAgain: "再予約",
+      confirmed: "確認済み",
+      completed: "完了",
+      cancelled: "キャンセル済み",
     },
   },
 };

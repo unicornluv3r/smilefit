@@ -112,7 +112,7 @@ const pt = {
       s3Title: "Apareça e Sorria",
       s3Desc: "Chegue ao local ao ar livre, conheça seu instrutor e aproveite a aula.",
       s3h1: "Direções GPS até o ponto de encontro exato",
-      s3h2: "Todo equipamento fornecido pelo instrutor",
+      s3h2: "O que trazer indicado em cada p\u00e1gina de aula",
       s3h3: "Deixe uma avaliação para ajudar a comunidade",
       forInstructors: "Para Instrutores",
       instructorTitle: "Expanda Seu Negócio de Fitness",
@@ -366,7 +366,21 @@ const pt = {
     profile: {
       title: "Meu Perfil",
       editProfile: "Editar Perfil",
-      photoSoon: "Upload de foto em breve",
+      avatar: {
+        upload: "Enviar foto",
+        change: "Alterar foto",
+        remove: "Remover foto",
+        cropTitle: "Recortar a sua foto",
+        cropSubtitle: "Ajuste e use o zoom para enquadrar o rosto",
+        zoom: "Zoom",
+        save: "Guardar foto",
+        cancel: "Cancelar",
+        uploading: "A enviar...",
+        errorTooLarge: "A foto deve ter menos de 2 MB",
+        errorInvalidType: "Envie uma imagem JPEG, PNG ou WebP",
+        errorUploadFailed: "Falha no envio. Tente novamente.",
+        successToast: "Foto de perfil atualizada!",
+      },
       cancel: "Cancelar",
       basicInfo: "Informações Básicas",
       displayName: "Nome de Exibição",
@@ -544,6 +558,61 @@ const pt = {
       profileUpdated: "Perfil atualizado",
       failedUpdateProfile: "Falha ao atualizar perfil",
       allCities: "Todas as Cidades",
+      viewDetails: "Ver detalhes",
+      viewProfile: "Ver perfil",
+      viewClass: "Ver aula",
+      popular: "Popular",
+      today: "Hoje!",
+      with: "com {{name}}",
+      cancelledOn: "Cancelado em {{date}}",
+      findClasses: "Encontrar aulas",
+    },
+
+    // ── Password ──────────────────────────────────────────
+    password: {
+      show: "Mostrar senha",
+      hide: "Ocultar senha",
+      weak: "Fraca",
+      fair: "Regular",
+      strong: "Forte",
+    },
+
+    // ── Social Login ──────────────────────────────────────
+    socialLogin: {
+      continueWithGoogle: "Continuar com Google",
+    },
+
+    // ── Instructor Sidebar ────────────────────────────────
+    instructorSidebar: {
+      responseRate: "Taxa de resposta:",
+      responds: "Responde",
+      joined: "Membro desde",
+      message: "Mensagem para {{name}}",
+      usuallyResponds: "Geralmente responde {{time}}",
+    },
+
+    // ── Class Detail Instructor ───────────────────────────
+    classDetailInstructor: {
+      classesTaught: "{{count}} aulas ministradas",
+    },
+
+    // ── City Card ─────────────────────────────────────────
+    cityCard: {
+      classCount: "{{count}} aulas",
+    },
+
+    // ── Booking Card ──────────────────────────────────────
+    bookingCard: {
+      cancelTitle: "Cancelar esta reserva?",
+      cancelDescText: "Tem certeza de que deseja cancelar sua reserva para {{name}}? Esta ação não pode ser desfeita.",
+      keepBooking: "Manter reserva",
+      yesCancel: "Sim, cancelar",
+      cancelBooking: "Cancelar reserva",
+      leaveReview: "Deixar uma avaliação",
+      bookAgain: "Reservar novamente",
+      confirmed: "Confirmada",
+      completed: "Concluída",
+      cancelled: "Cancelada",
     },
   },
 };

@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { LogOut, User, Calendar, LayoutDashboard, GraduationCap } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,18 +23,26 @@ function getInitials(name: string): string {
 }
 
 export function UserMenu() {
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
+  const { t } = useTranslation();
 
   const fullName =
-    (user?.user_metadata?.full_name as string) ?? user?.email ?? "User";
-  const role = user?.user_metadata?.role as string | undefined;
+    profile?.display_name ??
+    profile?.full_name ??
+    (user?.user_metadata?.full_name as string) ??
+    user?.email ??
+    "User";
+  const role =
+    profile?.role ?? (user?.user_metadata?.role as string | undefined);
   const initials = getInitials(fullName);
+  const avatarUrl = profile?.avatar_url ?? null;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="rounded-full">
           <Avatar className="size-8">
+            {avatarUrl && <AvatarImage src={avatarUrl} alt={fullName} />}
             <AvatarFallback className="bg-[#2563EB] text-xs text-white">
               {initials}
             </AvatarFallback>
@@ -49,13 +58,13 @@ export function UserMenu() {
         <DropdownMenuItem asChild>
           <Link to="/profile">
             <User className="mr-2 size-4" />
-            My Profile
+            {t("userMenu.myProfile")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/bookings">
             <Calendar className="mr-2 size-4" />
-            My Bookings
+            {t("userMenu.myBookings")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -63,21 +72,21 @@ export function UserMenu() {
           <DropdownMenuItem asChild>
             <Link to="/instructor/dashboard">
               <LayoutDashboard className="mr-2 size-4" />
-              Instructor Dashboard
+              {t("userMenu.instructorDashboard")}
             </Link>
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem asChild>
             <Link to="/become-instructor">
               <GraduationCap className="mr-2 size-4" />
-              Become an Instructor
+              {t("userMenu.becomeInstructor")}
             </Link>
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => void signOut()}>
           <LogOut className="mr-2 size-4" />
-          Sign Out
+          {t("userMenu.signOut")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
