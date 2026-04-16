@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   MessageCircle,
   Clock,
@@ -15,45 +16,67 @@ interface InstructorSidebarProps {
 }
 
 export function InstructorSidebar({ instructor }: InstructorSidebarProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="rounded-xl border bg-card p-5 shadow-md">
-      <div className="space-y-3 text-sm">
-        <div className="flex items-center gap-2.5">
-          <MessageCircle className="size-4 text-muted-foreground" />
-          <span>
-            Response rate:{" "}
-            <span className="font-medium">{instructor.responseRate}</span>
-          </span>
-        </div>
-        <div className="flex items-center gap-2.5">
-          <Clock className="size-4 text-muted-foreground" />
-          <span>
-            Responds{" "}
-            <span className="font-medium">{instructor.responseTime}</span>
-          </span>
-        </div>
-        <div className="flex items-center gap-2.5">
-          <CalendarDays className="size-4 text-muted-foreground" />
-          <span>
-            Joined{" "}
-            <span className="font-medium">{instructor.joinedDate}</span>
-          </span>
-        </div>
-      </div>
+      {(instructor.responseRate ||
+        instructor.responseTime ||
+        instructor.joinedDate) && (
+        <>
+          <div className="space-y-3 text-sm">
+            {instructor.responseRate && (
+              <div className="flex items-center gap-2.5">
+                <MessageCircle className="size-4 text-muted-foreground" />
+                <span>
+                  {t("instructorSidebar.responseRate")}{" "}
+                  <span className="font-medium">
+                    {instructor.responseRate}
+                  </span>
+                </span>
+              </div>
+            )}
+            {instructor.responseTime && (
+              <div className="flex items-center gap-2.5">
+                <Clock className="size-4 text-muted-foreground" />
+                <span>
+                  {t("instructorSidebar.responds")}{" "}
+                  <span className="font-medium">
+                    {instructor.responseTime}
+                  </span>
+                </span>
+              </div>
+            )}
+            {instructor.joinedDate && (
+              <div className="flex items-center gap-2.5">
+                <CalendarDays className="size-4 text-muted-foreground" />
+                <span>
+                  {t("instructorSidebar.joined")}{" "}
+                  <span className="font-medium">{instructor.joinedDate}</span>
+                </span>
+              </div>
+            )}
+          </div>
 
-      <Separator className="my-4" />
+          <Separator className="my-4" />
+        </>
+      )}
 
       <Button
         className="w-full bg-[#2563EB] hover:bg-[#2563EB]/90"
         size="lg"
       >
         <MessageCircle className="mr-2 size-4" />
-        Message {instructor.name.split(" ")[0]}
+        {t("instructorSidebar.message", { name: instructor.name.split(" ")[0] })}
       </Button>
 
-      <p className="mt-2 text-center text-xs text-muted-foreground">
-        Usually responds {instructor.responseTime}
-      </p>
+      {instructor.responseTime && (
+        <p className="mt-2 text-center text-xs text-muted-foreground">
+          {t("instructorSidebar.usuallyResponds", {
+            time: instructor.responseTime,
+          })}
+        </p>
+      )}
 
       {instructor.socialLinks && (
         <>
@@ -92,6 +115,8 @@ export function InstructorSidebar({ instructor }: InstructorSidebarProps) {
 }
 
 export function MobileMessageBar({ name }: { name: string }) {
+  const { t } = useTranslation();
+
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 border-t bg-background p-3 lg:hidden">
       <div className="container mx-auto">
@@ -100,7 +125,7 @@ export function MobileMessageBar({ name }: { name: string }) {
           size="lg"
         >
           <MessageCircle className="mr-2 size-4" />
-          Message {name}
+          {t("instructorSidebar.message", { name })}
         </Button>
       </div>
     </div>

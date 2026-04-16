@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   MapPin,
   Globe,
@@ -19,6 +20,7 @@ interface InstructorHeaderProps {
 }
 
 export function InstructorHeader({ instructor }: InstructorHeaderProps) {
+  const { t } = useTranslation();
   const initials = instructor.name
     .split(" ")
     .map((w) => w[0])
@@ -52,64 +54,109 @@ export function InstructorHeader({ instructor }: InstructorHeaderProps) {
           <p className="mt-1 text-muted-foreground">{instructor.tagline}</p>
 
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <MapPin className="size-4" />
-              {instructor.city}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Globe className="size-4" />
-              {instructor.languages.join(", ")}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CalendarDays className="size-4" />
-              Joined {instructor.joinedDate}
-            </span>
+            {instructor.city && (
+              <span className="flex items-center gap-1.5">
+                <MapPin className="size-4" />
+                {instructor.city}
+              </span>
+            )}
+            {instructor.languages.length > 0 && (
+              <span className="flex items-center gap-1.5">
+                <Globe className="size-4" />
+                {instructor.languages.join(", ")}
+              </span>
+            )}
+            {instructor.joinedDate && (
+              <span className="flex items-center gap-1.5">
+                <CalendarDays className="size-4" />
+                {t("instructorSidebar.joined")} {instructor.joinedDate}
+              </span>
+            )}
           </div>
 
           {/* Action buttons */}
           <div className="mt-4 flex gap-2">
             <Button variant="outline" size="sm">
               <MessageCircle className="mr-1.5 size-4" />
-              Message
+              {t("instructorProfile.message")}
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => {
                 void navigator.clipboard.writeText(window.location.href);
-                toast.success("Profile link copied!");
+                toast.success(t("instructorProfile.profileCopied"));
               }}
             >
               <Share2 className="mr-1.5 size-4" />
-              Share
+              {t("instructorProfile.share")}
             </Button>
           </div>
         </div>
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard
-          icon={<Star className="size-5 fill-amber-400 text-amber-400" />}
-          value={instructor.rating.toFixed(1)}
-          label={`${instructor.reviewCount} reviews`}
-        />
-        <StatCard
-          icon={<GraduationCap className="size-5 text-[#2563EB]" />}
-          value={instructor.totalStudents.toLocaleString()}
-          label="Students trained"
-        />
-        <StatCard
-          icon={<CalendarDays className="size-5 text-[#2563EB]" />}
-          value={`${instructor.yearsExperience}+`}
-          label="Years experience"
-        />
-        <StatCard
-          icon={<MessageCircle className="size-5 text-[#2563EB]" />}
-          value={instructor.responseRate}
-          label="Response rate"
-        />
-      </div>
+      {(() => {
+        const cards = [
+          instructor.reviewCount > 0
+            ? {
+                key: "rating",
+                icon: (
+                  <Star className="size-5 fill-amber-400 text-amber-400" />
+                ),
+                value: instructor.rating.toFixed(1),
+                label: `${instructor.reviewCount} ${t("instructorProfile.reviews")}`,
+              }
+            : null,
+          instructor.totalStudents > 0
+            ? {
+                key: "students",
+                icon: <GraduationCap className="size-5 text-[#2563EB]" />,
+                value: instructor.totalStudents.toLocaleString(),
+                label: t("instructorProfile.studentsTrained"),
+              }
+            : null,
+          instructor.yearsExperience > 0
+            ? {
+                key: "years",
+                icon: <CalendarDays className="size-5 text-[#2563EB]" />,
+                value: `${instructor.yearsExperience}+`,
+                label: t("instructorProfile.yearsExperience"),
+              }
+            : null,
+          instructor.responseRate
+            ? {
+                key: "response",
+                icon: <MessageCircle className="size-5 text-[#2563EB]" />,
+                value: instructor.responseRate,
+                label: t("instructorProfile.responseRate"),
+              }
+            : null,
+        ].filter(
+          (c): c is NonNullable<typeof c> => c !== null,
+        );
+        if (cards.length === 0) return null;
+        const cols =
+          cards.length === 1
+            ? "grid-cols-1"
+            : cards.length === 2
+              ? "grid-cols-2"
+              : cards.length === 3
+                ? "grid-cols-2 sm:grid-cols-3"
+                : "grid-cols-2 sm:grid-cols-4";
+        return (
+          <div className={`grid gap-3 ${cols}`}>
+            {cards.map((c) => (
+              <StatCard
+                key={c.key}
+                icon={c.icon}
+                value={c.value}
+                label={c.label}
+              />
+            ))}
+          </div>
+        );
+      })()}
     </div>
   );
 }

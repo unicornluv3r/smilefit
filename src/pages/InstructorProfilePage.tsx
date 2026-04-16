@@ -58,16 +58,16 @@ function dbToMockProfile(
     tagline: profile.specialties?.slice(0, 3).join(", ") ?? "",
     bio: profile.bio ?? "",
     city: profile.city ?? "",
-    languages: ["Italian", "English"],
+    languages: [],
     specialties: profile.specialties ?? [],
     certifications: profile.certifications ?? [],
     yearsExperience: profile.years_experience ?? 0,
     rating: Number(profile.average_rating),
     reviewCount: reviews.length,
-    totalStudents: profile.total_classes_taught * 8,
-    responseRate: "95%",
-    responseTime: "within 2 hours",
-    joinedDate: "2024",
+    totalStudents: profile.total_classes_taught,
+    responseRate: "",
+    responseTime: "",
+    joinedDate: "",
     classes: classes.map((cls) => ({
       id: cls.id,
       title: cls.title,
@@ -144,16 +144,16 @@ function buildProfileFromMockOrClasses(
     tagline: specialties.slice(0, 3).join(", "),
     bio: classMatch?.instructor_bio ?? `${name} is an outdoor fitness instructor based in ${city}, specializing in ${specialties.join(", ")}.`,
     city,
-    languages: ["Italian", "English"],
+    languages: [],
     specialties,
     certifications: [],
     yearsExperience: 0,
     rating: mock?.rating ?? Number(classMatch?.instructor_rating ?? 0),
     reviewCount: mock?.reviewCount ?? 0,
-    totalStudents: (mock?.reviewCount ?? 0) * 8,
-    responseRate: "95%",
-    responseTime: "within 2 hours",
-    joinedDate: "2025",
+    totalStudents: mock?.reviewCount ?? 0,
+    responseRate: "",
+    responseTime: "",
+    joinedDate: "",
     classes: matchingClasses.map((cls) => ({
       id: cls.id,
       title: cls.title,
@@ -286,17 +286,24 @@ export function InstructorProfilePage() {
                 ))}
               </div>
 
-              <h3 className="mb-3 mt-6 text-base font-semibold">
-                {t("instructorProfile.certifications")}
-              </h3>
-              <ul className="space-y-2">
-                {instructor.certifications.map((c) => (
-                  <li key={c} className="flex items-start gap-2 text-sm">
-                    <BadgeCheck className="mt-0.5 size-4 shrink-0 text-[#2563EB]" />
-                    <span>{c}</span>
-                  </li>
-                ))}
-              </ul>
+              {instructor.certifications.length > 0 && (
+                <>
+                  <h3 className="mb-3 mt-6 text-base font-semibold">
+                    {t("instructorProfile.certifications")}
+                  </h3>
+                  <ul className="space-y-2">
+                    {instructor.certifications.map((c) => (
+                      <li
+                        key={c}
+                        className="flex items-start gap-2 text-sm"
+                      >
+                        <BadgeCheck className="mt-0.5 size-4 shrink-0 text-[#2563EB]" />
+                        <span>{c}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </section>
 
             <Separator />
